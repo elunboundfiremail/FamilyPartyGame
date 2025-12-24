@@ -1,5 +1,7 @@
 # 🎉 Family Party Game
 
+> Juego familiar en línea - Desplegado en GitHub Pages
+
 ¡El juego perfecto para pasar una noche divertida en familia! Un juego de tablero estilo Mario Party con minijuegos de trivia, acertijos, retos y más.
 
 ## ✨ Características
