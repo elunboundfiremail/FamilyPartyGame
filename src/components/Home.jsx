@@ -18,10 +18,10 @@ function Home({ onCreateRoom, onJoinRoom }) {
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-5xl font-bold text-center mb-2 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold text-center mb-2 bg-gradient-to-r from-yellow-200 via-orange-300 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
             🎉 Family Party 🎉
           </h1>
-          <p className="text-center text-purple-200 mb-8">
+          <p className="text-center text-yellow-100 mb-8 font-semibold">
             ¡El juego perfecto para la familia!
           </p>
         </motion.div>
@@ -32,8 +32,8 @@ function Home({ onCreateRoom, onJoinRoom }) {
             placeholder="Tu nombre"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white bg-opacity-20 border border-white border-opacity-30 
-                     text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="w-full px-4 py-3 rounded-xl bg-white bg-opacity-25 border-2 border-yellow-300 border-opacity-50 
+                     text-white placeholder-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-400 font-semibold"
           />
         </div>
 
@@ -108,5 +108,4 @@ function Home({ onCreateRoom, onJoinRoom }) {
     </div>
   );
 }
-
-export default Home;
+

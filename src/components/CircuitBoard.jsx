@@ -41,16 +41,16 @@ function CircuitBoard({ players, totalSpaces = 25 }) {
   const layout = createSnakeLayout();
 
   const getSpaceType = (position) => {
-    if (position === 0) return { emoji: '🏁', type: 'start', color: 'from-green-400 to-green-500' };
-    if (position === totalSpaces - 1) return { emoji: '🏆', type: 'finish', color: 'from-yellow-400 to-yellow-500' };
+    if (position === 0) return { emoji: '🏁', type: 'start', color: 'from-green-400 to-green-600' };
+    if (position === totalSpaces - 1) return { emoji: '🏆', type: 'finish', color: 'from-yellow-300 via-yellow-400 to-amber-500' };
     
     const types = [
-      { emoji: '🧠', type: 'trivia', color: 'from-blue-400 to-blue-500' },
-      { emoji: '🤔', type: 'acertijo', color: 'from-purple-400 to-purple-500' },
-      { emoji: '🎯', type: 'reto', color: 'from-pink-400 to-pink-500' },
-      { emoji: '⚡', type: 'rapido', color: 'from-orange-400 to-orange-500' },
-      { emoji: '💬', type: 'conversacion', color: 'from-cyan-400 to-cyan-500' },
-      { emoji: '😱', type: 'penitencia', color: 'from-red-400 to-red-500' },
+      { emoji: '🧠', type: 'trivia', color: 'from-blue-300 to-blue-400' },
+      { emoji: '🤔', type: 'acertijo', color: 'from-purple-300 to-purple-400' },
+      { emoji: '🎯', type: 'reto', color: 'from-red-300 to-red-400' },
+      { emoji: '⚡', type: 'rapido', color: 'from-orange-300 via-orange-400 to-yellow-400' },
+      { emoji: '💬', type: 'conversacion', color: 'from-pink-300 to-pink-400' },
+      { emoji: '😱', type: 'penitencia', color: 'from-gray-400 to-gray-500' },
     ];
     
     return types[position % types.length];
