@@ -68,48 +68,58 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
   return (
     <div className="w-full max-w-5xl mx-auto">
       <div className="glass rounded-2xl p-6">
-        {/* Tablero con posicionamiento absoluto tipo gusano */}
-        <div className="relative" style={{ height: '600px' }}>
-          {layout.map((space) => {
-            const spaceInfo = getSpaceType(space.position);
-            const playersHere = getPlayersOnSpace(space.position);
-            
-            // Calcular posición en la pantalla
-            const left = space.x * 80 + 20;
-            const top = space.y * 70 + 20;
-            
-            return (
-              <motion.div
-                key={space.position}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: space.position * 0.03 }}
-                whileHover={{ scale: 1.15, rotate: 5, zIndex: 50 }}
-                style={{
-                  position: 'absolute',
-                  left: `${left}px`,
-                  top: `${top}px`
-                }}
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
-                          shadow-lg flex flex-col items-center justify-center border-2 border-white border-opacity-40`}
-              >
-                {/* Conector al siguiente (línea) */}
-                {space.position < totalSpaces - 1 && (
-                  <div
-                    className="absolute bg-yellow-300 opacity-40"
-                    style={{
-                      width: space.position < totalSpaces - 1 && layout[space.position + 1] ? 
-                        `${Math.sqrt(Math.pow((layout[space.position + 1].x - space.x) * 80, 2) + 
-                                    Math.pow((layout[space.position + 1].y - space.y) * 70, 2))}px` : '0px',
-                      height: '4px',
-                      transformOrigin: 'left center',
-                      transform: space.position < totalSpaces - 1 && layout[space.position + 1] ?
-                        `rotate(${Math.atan2((layout[space.position + 1].y - space.y) * 70, 
-                                            (layout[space.position + 1].x - space.x) * 80) * 180 / Math.PI}deg) translateX(40px)` : 'none',
-                      zIndex: -1
-                    }}
-                  />
-                )}
+        {/* Tablero con scroll vertical para ver todas las casillas */}
+        <div className="relative overflow-y-auto overflow-x-hidden" style={{ maxHeight: '70vh', height: 'auto' }}>
+          <div className="relative" style={{ minHeight: '650px', paddingBottom: '40px' }}>
+            {layout.map((space) => {
+              const spaceInfo = getSpaceType(space.position);
+              const playersHere = getPlayersOnSpace(space.position);
+              
+              // Calcular posición en la pantalla
+              const left = space.x * 90 + 10;
+              const top = space.y * 75 + 10;
+              
+              return (
+                <motion.div
+                  key={space.position}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: space.position * 0.03 }}
+                  whileHover={{ scale: 1.15, rotate: 5, zIndex: 50 }}
+                  style={{
+                    position: 'absolute',
+                    left: `${left}px`,
+                    top: `${top}px`
+                  }}
+                  className={`w-20 h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
+                            shadow-lg flex flex-col items-center justify-center border-3 border-white border-opacity-50`}
+                >
+                  {/* Línea conectora al siguiente - MEJORADA */}
+                  {space.position < totalSpaces - 1 && layout[space.position + 1] && (
+                    <svg 
+                      className="absolute pointer-events-none"
+                      style={{
+                        position: 'absolute',
+                        left: '40px',
+                        top: '40px',
+                        width: `${Math.abs((layout[space.position + 1].x - space.x) * 90) + 100}px`,
+                        height: `${Math.abs((layout[space.position + 1].y - space.y) * 75) + 100}px`,
+                        zIndex: -1,
+                        overflow: 'visible'
+                      }}
+                    >
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2={(layout[space.position + 1].x - space.x) * 90}
+                        y2={(layout[space.position + 1].y - space.y) * 75}
+                        stroke="#FCD34D"
+                        strokeWidth="4"
+                        strokeOpacity="0.5"
+                        strokeDasharray="5,5"
+                      />
+                    </svg>
+                  )}
                 
                 {/* Número de casilla - MÁS VISIBLE */}
                 <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-70 rounded-full w-7 h-7 flex items-center justify-center border border-yellow-300">
@@ -167,10 +177,11 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
               </motion.div>
             );
           })}
+          </div>
         </div>
         
         {/* Leyenda */}
-        <div className="mt-6 grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs">
+        <div className="mt-4 grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs">
           <div className="flex items-center gap-1">
             <span className="text-lg">🧠</span>
             <span className="text-white">Trivia</span>
@@ -195,6 +206,10 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
             <span className="text-lg">😱</span>
             <span className="text-white">Penitencia</span>
           </div>
+        </div>
+        
+        <div className="mt-3 text-center text-sm text-yellow-200">
+          ⬇️ Desliza hacia abajo para ver más casillas
         </div>
       </div>
     </div>
