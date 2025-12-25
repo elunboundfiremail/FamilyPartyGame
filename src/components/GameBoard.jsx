@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DiceRoll from './DiceRoll';
-import MiniGame from './MiniGame';
 import PlayerCard from './PlayerCard';
-import VotingSystem from './VotingSystem';
 import CircuitBoard from './CircuitBoard';
 import MysteryBox from './MysteryBox';
 import MysteryBoxResult from './MysteryBoxResult';
 import TapGame from './TapGame';
 import MemoryGame from './MemoryGame';
 import MathGame from './MathGame';
-import SharedQuestion from './SharedQuestion';
 import SpokenAnswer from './SpokenAnswer';
 import { getRandomReward } from '../data/mysteryBoxRewards';
 import { triviaQuestions, acertijos, retos, preguntasConversacion } from '../data/questions';
@@ -18,15 +15,12 @@ import { triviaQuestions, acertijos, retos, preguntasConversacion } from '../dat
 function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
   const [showDice, setShowDice] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
-  const [showVoting, setShowVoting] = useState(false);
   const [showMysteryBox, setShowMysteryBox] = useState(false);
   const [showMysteryResult, setShowMysteryResult] = useState(false);
   const [showSharedQuestion, setShowSharedQuestion] = useState(false);
   const [diceResult, setDiceResult] = useState(null);
   const [miniGameData, setMiniGameData] = useState(null);
-  const [pendingPoints, setPendingPoints] = useState(0);
   const [mysteryReward, setMysteryReward] = useState(null);
-  const [correctAnswer, setCorrectAnswer] = useState(null);
   const [sharedQuestionData, setSharedQuestionData] = useState(null);
   
   const boardSpaces = 30; // Número de casillas en el tablero
@@ -59,7 +53,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
       setMysteryReward(reward);
       
       if (reward.type === 'minigame') {
-        // Es un minijuego especial
+        // Es un minijuego especial (tap, memory, math)
         setMiniGameData({
           type: reward.value,
           player: currentPlayer
@@ -86,11 +80,29 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         randomType = 'rapido';
       }
       
-      setMiniGameData({
-        type: randomType,
-        player: currentPlayer
-      });
-      setShowMiniGame(true);
+      // Obtener pregunta según el tipo
+      let question;
+      if (randomType === 'trivia') {
+        const allTrivia = Object.values(triviaQuestions).flat();
+        question = allTrivia[Math.floor(Math.random() * allTrivia.length)];
+      } else if (randomType === 'acertijo') {
+        question = acertijos[Math.floor(Math.random() * acertijos.length)];
+      } else if (randomType === 'reto') {
+        question = retos[Math.floor(Math.random() * retos.length)];
+        if (question.text && !question.q) {
+          question.q = question.text;
+        }
+      } else if (randomType === 'conversacion') {
+        const pregunta = preguntasConversacion[Math.floor(Math.random() * preguntasConversacion.length)];
+        question = { q: pregunta, points: 10, a: ['Respuesta válida'] };
+      } else if (randomType === 'rapido') {
+        const pregunta = retos[Math.floor(Math.random() * retos.length)];
+        question = { q: pregunta.text || pregunta.q, points: 10, a: ['Completado'] };
+      }
+      
+      // Ir directamente a SpokenAnswer (respuesta hablada + votación)
+      setSharedQuestionData(question);
+      setShowSharedQuestion(true);
     }
   };
 
@@ -109,57 +121,18 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
     }, 1000);
   };
 
-  const handleMiniGameComplete = (points, answer = null, correctAns = null) => {
-    // No cerrar el minijuego aún si es de tipo pregunta
-    if (miniGameData.type === 'trivia' || miniGameData.type === 'acertijo' || 
-        miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
-      
-      // Obtener pregunta según el tipo
-      let question;
-      if (miniGameData.type === 'trivia') {
-        const allTrivia = Object.values(triviaQuestions).flat();
-        question = allTrivia[Math.floor(Math.random() * allTrivia.length)];
-      } else if (miniGameData.type === 'acertijo') {
-        question = acertijos[Math.floor(Math.random() * acertijos.length)];
-      } else if (miniGameData.type === 'reto') {
-        question = retos[Math.floor(Math.random() * retos.length)];
-        if (question.text && !question.q) {
-          question.q = question.text;
-        }
-      } else if (miniGameData.type === 'conversacion') {
-        const pregunta = preguntasConversacion[Math.floor(Math.random() * preguntasConversacion.length)];
-        question = { q: pregunta, points: 10, a: ['Respuesta válida'] };
-      }
-      
-      setSharedQuestionData(question);
-      setShowMiniGame(false); // Cerrar ANTES de abrir votación
-      setShowSharedQuestion(true);
-    } else {
-      // Para minijuegos de botones (tap, memoria, math)
-      setShowMiniGame(false);
-      onMiniGameComplete(points);
-      setTimeout(() => {
-        onEndTurn();
-      }, 1000);
-    }
+  const handleSpecialMiniGameComplete = (points) => {
+    // Solo para minijuegos especiales de botones (tap, memoria, math)
+    setShowMiniGame(false);
+    onMiniGameComplete(points);
+    setTimeout(() => {
+      onEndTurn();
+    }, 1000);
   };
 
   const handleSharedQuestionComplete = (points, winnerId) => {
     setShowSharedQuestion(false);
     onMiniGameComplete(points);
-    setTimeout(() => {
-      onEndTurn();
-    }, 1500);
-  };
-
-  const handleVoteComplete = (approved, yesVotes, noVotes) => {
-    setShowVoting(false);
-    
-    // Si fue aprobado, dar los puntos, si no, dar 0
-    const finalPoints = approved ? pendingPoints : 0;
-    
-    onMiniGameComplete(finalPoints);
-    
     setTimeout(() => {
       onEndTurn();
     }, 1500);
@@ -218,7 +191,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleRollDice}
-              disabled={showDice || showMiniGame || showVoting}
+              disabled={showDice || showMiniGame || showSharedQuestion || showMysteryBox || showMysteryResult}
               className="btn-primary text-2xl disabled:opacity-50"
             >
               🎲 Lanzar Dado
@@ -239,23 +212,6 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
           <DiceRoll onComplete={handleDiceComplete} />
         )}
         
-        {showMiniGame && miniGameData && (
-          <MiniGame 
-            type={miniGameData.type}
-            player={miniGameData.player}
-            onComplete={handleMiniGameComplete}
-          />
-        )}
-        
-        {showVoting && (
-          <VotingSystem
-            players={players}
-            currentPlayer={currentPlayer}
-            onVoteComplete={handleVoteComplete}
-            correctAnswer={correctAnswer}
-          />
-        )}
-        
         {showMysteryBox && (
           <MysteryBox 
             onChoice={handleMysteryChoice}
@@ -274,21 +230,21 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         {miniGameData?.type === 'tap' && showMiniGame && (
           <TapGame
             player={miniGameData.player}
-            onComplete={handleMiniGameComplete}
+            onComplete={handleSpecialMiniGameComplete}
           />
         )}
         
         {miniGameData?.type === 'memory' && showMiniGame && (
           <MemoryGame
             player={miniGameData.player}
-            onComplete={handleMiniGameComplete}
+            onComplete={handleSpecialMiniGameComplete}
           />
         )}
         
         {miniGameData?.type === 'math' && showMiniGame && (
           <MathGame
             player={miniGameData.player}
-            onComplete={handleMiniGameComplete}
+            onComplete={handleSpecialMiniGameComplete}
           />
         )}
         
