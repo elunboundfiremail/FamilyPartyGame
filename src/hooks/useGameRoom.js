@@ -115,9 +115,13 @@ export function useGameRoom() {
       const playerRef = ref(database, `rooms/${room.code}/players/${playerId}`);
       const player = players.find(p => p.id === playerId);
       
+      // No permitir puntos negativos
+      const currentPoints = player.points || 0;
+      const newPoints = Math.max(0, currentPoints + pointsEarned);
+      
       await update(playerRef, {
         position: newPosition,
-        points: (player.points || 0) + pointsEarned
+        points: newPoints
       });
     }
   };

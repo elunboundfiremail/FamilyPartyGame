@@ -51,10 +51,10 @@ export const mysteryBoxRewards = {
   bad: [
     { 
       type: 'points', 
-      value: -10, 
+      value: -5, 
       emoji: '😱', 
       title: '¡Carbón!', 
-      message: 'Te portaste mal... Pierdes 10 puntos' 
+      message: 'Te portaste mal... Pierdes 5 puntos (si tienes)' 
     },
     { 
       type: 'retreat', 

@@ -11,8 +11,9 @@ import TapGame from './TapGame';
 import MemoryGame from './MemoryGame';
 import MathGame from './MathGame';
 import SharedQuestion from './SharedQuestion';
+import SpokenAnswer from './SpokenAnswer';
 import { getRandomReward } from '../data/mysteryBoxRewards';
-import { triviaQuestions, acertijos } from '../data/questions';
+import { triviaQuestions, acertijos, retos, preguntasConversacion } from '../data/questions';
 
 function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
   const [showDice, setShowDice] = useState(false);
@@ -99,25 +100,32 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   const handleMiniGameComplete = (points, answer = null, correctAns = null) => {
     setShowMiniGame(false);
     
-    // Para trivias y acertijos, usar sistema de preguntas compartidas
-    if (miniGameData.type === 'trivia' || miniGameData.type === 'acertijo') {
-      // Obtener pregunta aleatoria
+    // TODAS las preguntas usan el sistema de respuesta hablada con votación
+    if (miniGameData.type === 'trivia' || miniGameData.type === 'acertijo' || 
+        miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
+      
+      // Obtener pregunta según el tipo
       let question;
       if (miniGameData.type === 'trivia') {
         const allTrivia = Object.values(triviaQuestions).flat();
         question = allTrivia[Math.floor(Math.random() * allTrivia.length)];
-      } else {
+      } else if (miniGameData.type === 'acertijo') {
         question = acertijos[Math.floor(Math.random() * acertijos.length)];
+      } else if (miniGameData.type === 'reto') {
+        question = retos[Math.floor(Math.random() * retos.length)];
+        // Los retos tienen formato diferente (text en vez de q)
+        if (question.text && !question.q) {
+          question.q = question.text;
+        }
+      } else if (miniGameData.type === 'conversacion') {
+        const pregunta = preguntasConversacion[Math.floor(Math.random() * preguntasConversacion.length)];
+        question = { q: pregunta, points: 10, a: ['Respuesta válida'] };
       }
       
       setSharedQuestionData(question);
       setShowSharedQuestion(true);
-    } else if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
-      // Para retos y conversación, usar votación tradicional
-      setPendingPoints(points);
-      setShowVoting(true);
     } else {
-      // Para otros juegos, dar puntos directamente
+      // Para minijuegos de botones (tap, memoria, math), dar puntos directamente
       onMiniGameComplete(points);
       setTimeout(() => {
         onEndTurn();
@@ -270,7 +278,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         )}
         
         {showSharedQuestion && sharedQuestionData && (
-          <SharedQuestion
+          <SpokenAnswer
             question={sharedQuestionData}
             players={players}
             currentPlayer={currentPlayer}
