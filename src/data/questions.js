@@ -78,26 +78,71 @@ export const penitencias = [
 ];
 
 export const preguntasConversacion = [
-  "¿Qué fue lo mejor que te pasó hoy?",
+  // Sobre el año actual
+  "¿Qué fue lo mejor que te pasó este año?",
+  "¿Cuál fue tu mayor desafío este año y cómo lo superaste?",
+  "¿Qué fue lo más gracioso que te pasó este año?",
+  "¿Qué aprendiste sobre ti mismo este año?",
+  "¿Cuál fue el momento más emocionante de tu año?",
+  "¿Qué cosa nueva probaste este año?",
+  "¿Hubo algún momento este año en el que te sentiste muy orgulloso?",
+  "¿Qué persona conociste este año que dejó huella en ti?",
+  "¿Cuál fue tu logro más importante este año?",
+  "Si pudieras revivir un día de este año, ¿cuál sería?",
+  
+  // Memorias y familia
   "¿Cuál es tu recuerdo favorito de la infancia?",
+  "Cuenta una historia divertida de cuando eras niño",
+  "¿Qué tradición familiar te gusta más?",
+  "¿Cuál es tu recuerdo más bonito con esta familia?",
+  "¿Qué momento familiar te hizo reír más?",
+  "¿Cuál fue tu viaje familiar favorito?",
+  "¿Qué te enseñó tu familia que más valoras?",
+  "¿Hay alguna anécdota familiar que siempre cuentas?",
+  
+  // Sueños y aspiraciones
+  "¿Cuál es tu sueño más grande?",
+  "Si pudieras hacer cualquier cosa sin límites, ¿qué harías?",
+  "¿Qué te gustaría lograr en los próximos 5 años?",
+  "Si pudieras aprender cualquier habilidad al instante, ¿cuál sería?",
+  "¿Qué lugar del mundo te gustaría conocer y por qué?",
+  "Si pudieras tener cualquier trabajo, ¿cuál elegirías?",
+  
+  // Reflexiones personales
+  "¿Qué te hace verdaderamente feliz?",
+  "¿Cuál es tu mayor miedo y cómo lo enfrentas?",
+  "¿Qué consejo le darías a tu yo de hace 5 años?",
+  "¿Qué es lo que más te gusta de ti mismo?",
+  "¿Cuál ha sido el mejor consejo que has recibido?",
+  "¿Qué te gustaría que la gente supiera de ti?",
+  
+  // Sobre otros
+  "¿Quién es tu mayor inspiración y por qué?",
+  "¿Qué persona de tu vida te ha ayudado más?",
   "Si pudieras cenar con cualquier persona (viva o muerta), ¿quién sería?",
-  "¿Qué superpoder te gustaría tener y por qué?",
-  "¿Cuál es tu película favorita de todos los tiempos?",
-  "Si pudieras viajar a cualquier lugar del mundo, ¿dónde irías?",
-  "¿Qué talento te gustaría tener?",
-  "¿Cuál es tu comida favorita?",
-  "¿Qué te hace reír sin control?",
-  "Comparte algo que aprendiste este año",
-  "¿Cuál es tu tradición familiar favorita?",
-  "Si pudieras cambiar algo del mundo, ¿qué sería?",
-  "¿Cuál es tu mayor logro hasta ahora?",
-  "¿Qué te gustaría hacer en los próximos 5 años?",
-  "Cuenta una historia divertida de tu familia",
-  "¿Qué consejo le darías a tu yo del pasado?",
-  "¿Cuál ha sido tu mejor viaje o aventura?",
+  "¿Qué es lo que más admiras en las personas?",
+  
+  // Gustos y preferencias
+  "¿Cuál es tu película favorita y por qué?",
   "¿Qué música te pone de buen humor?",
-  "¿Cuál es tu hobby favorito y por qué?",
+  "¿Cuál es tu comida favorita y por qué?",
+  "¿Qué libro o película te marcó profundamente?",
+  "¿Cuál es tu pasatiempo favorito?",
+  "¿Qué te hace reír sin control?",
+  
+  // Preguntas profundas
+  "Si pudieras cambiar algo del mundo, ¿qué sería?",
+  "¿Qué superpoder elegirías tener y cómo lo usarías?",
+  "Si tuvieras un millón de dólares, ¿qué harías?",
   "¿Qué es lo que más valoras en una amistad?",
+  "¿Cuál crees que es el sentido de la vida?",
+  
+  // Momentos especiales
+  "¿Cuál fue el mejor regalo que recibiste?",
+  "¿Cuál fue el momento más vergonzoso de tu vida?",
+  "¿Alguna vez hiciste algo muy valiente?",
+  "¿Cuál fue la decisión más difícil que tomaste?",
+  "¿Hay algo que te gustaría hacer antes de que termine el año?",
 ];
 
 // Nuevos minijuegos

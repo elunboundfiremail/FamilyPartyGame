@@ -24,7 +24,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   const [mysteryReward, setMysteryReward] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   
-  const boardSpaces = 25; // Número de casillas en el tablero
+  const boardSpaces = 30; // Número de casillas en el tablero
   const playerColors = [
     'bg-pink-500', 'bg-purple-500', 'bg-cyan-500', 'bg-yellow-500', 
     'bg-green-500', 'bg-red-500', 'bg-blue-500', 'bg-indigo-500',
@@ -145,15 +145,17 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Panel lateral de jugadores */}
           <div className="lg:col-span-1 space-y-3">
-            <h3 className="text-white font-bold text-xl mb-3">👥 Jugadores</h3>
-            {players.map((player, index) => (
-              <PlayerCard 
-                key={player.id}
-                player={player}
-                color={playerColors[index]}
-                isCurrentTurn={player.id === currentPlayer?.id}
-              />
-            ))}
+            <h3 className="text-white font-bold text-xl mb-3">👥 Jugadores ({players.length})</h3>
+            <div className="max-h-[600px] overflow-y-auto space-y-3 pr-2">
+              {players.map((player, index) => (
+                <PlayerCard 
+                  key={player.id}
+                  player={player}
+                  color={playerColors[index % playerColors.length]}
+                  isCurrentTurn={player.id === currentPlayer?.id}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Tablero de juego */}

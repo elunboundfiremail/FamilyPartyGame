@@ -61,12 +61,8 @@ function VotingSystem({ players, currentPlayer, onVoteComplete, correctAnswer })
     onVoteComplete(approved, approvals, rejections);
   };
 
-  const getMyPlayerId = () => {
-    return players.find(p => p.isMe)?.id;
-  };
-
-  const myPlayerId = getMyPlayerId();
-  const canIVote = myPlayerId !== currentPlayer.id;
+  const myPlayerId = players.find(p => p.isMe)?.id;
+  const canIVote = myPlayerId && myPlayerId !== currentPlayer.id;
 
   return (
     <motion.div

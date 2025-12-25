@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion';
 
-function CircuitBoard({ players, totalSpaces = 25 }) {
-  const playerColors = ['bg-pink-500', 'bg-purple-500', 'bg-cyan-500', 'bg-yellow-500', 'bg-green-500', 'bg-red-500'];
+function CircuitBoard({ players, totalSpaces = 30 }) {
+  const playerColors = [
+    'bg-pink-500', 'bg-purple-500', 'bg-cyan-500', 'bg-yellow-500', 
+    'bg-green-500', 'bg-red-500', 'bg-blue-500', 'bg-indigo-500',
+    'bg-orange-500', 'bg-teal-500', 'bg-lime-500', 'bg-rose-500'
+  ];
   
   // Crear el circuito en forma de serpiente
   const createSnakeLayout = () => {
@@ -76,16 +80,30 @@ function CircuitBoard({ players, totalSpaces = 25 }) {
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: space.position * 0.02 }}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
                     className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
-                              shadow-lg flex flex-col items-center justify-center`}
+                              shadow-lg flex flex-col items-center justify-center border-2 border-white border-opacity-40`}
                   >
-                    {/* Número de casilla */}
-                    <div className="absolute top-1 left-1 text-xs font-bold text-white opacity-70">
-                      {space.position + 1}
+                    {/* Número de casilla - MÁS VISIBLE */}
+                    <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-60 rounded-full w-6 h-6 flex items-center justify-center">
+                      <span className="text-xs font-bold text-white">{space.position + 1}</span>
                     </div>
                     
-                    {/* Emoji del tipo de casilla */}
-                    <div className="text-2xl sm:text-3xl">{spaceInfo.emoji}</div>
+                    {/* Emoji del tipo de casilla - ANIMADO */}
+                    <motion.div 
+                      className="text-2xl sm:text-3xl"
+                      animate={{
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: space.position * 0.1
+                      }}
+                    >
+                      {spaceInfo.emoji}
+                    </motion.div>
                     
                     {/* Jugadores en esta casilla */}
                     {playersHere.length > 0 && (
@@ -97,7 +115,7 @@ function CircuitBoard({ players, totalSpaces = 25 }) {
                               key={player.id}
                               initial={{ scale: 0, y: -10 }}
                               animate={{ scale: 1, y: 0 }}
-                              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${playerColors[playerIndex]} 
+                              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${playerColors[playerIndex % playerColors.length]} 
                                        border-2 border-white shadow-lg flex items-center justify-center 
                                        text-xs font-bold text-white`}
                             >
