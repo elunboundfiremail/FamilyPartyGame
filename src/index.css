@@ -4,79 +4,52 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-red-700 via-green-600 to-red-600 min-h-screen;
+    background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #2d1b3d 100%);
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
   }
   
-  /* Fondo giratorio navideño */
+  /* Cielo estrellado de fondo - Estilo Mario */
   body::before {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 150vw;
-    height: 150vh;
-    background: radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(34, 139, 34, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.1) 0%, transparent 60%);
-    animation: rotateBackground 60s linear infinite;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 0;
-    filter: blur(60px);
-  }
-  
-  @keyframes rotateBackground {
-    0% {
-      transform: translate(-50%, -50%) rotate(0deg);
-    }
-    100% {
-      transform: translate(-50%, -50%) rotate(360deg);
-    }
-  }
-  
-  /* Contenedor para múltiples copos de nieve */
-  body::after {
     content: '';
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 9998;
+    width: 100%;
+    height: 100%;
     background-image: 
-      radial-gradient(2px 2px at 20% 30%, white, transparent),
-      radial-gradient(2px 2px at 60% 70%, white, transparent),
-      radial-gradient(1px 1px at 50% 50%, white, transparent),
-      radial-gradient(1px 1px at 80% 10%, white, transparent),
-      radial-gradient(2px 2px at 90% 60%, white, transparent),
-      radial-gradient(1px 1px at 33% 50%, white, transparent),
-      radial-gradient(1px 1px at 66% 90%, white, transparent);
-    background-size: 200px 200px, 300px 300px, 250px 250px, 350px 350px, 280px 280px, 220px 220px, 320px 320px;
-    background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 150px 50px, 200px 150px, 100px 200px;
-    animation: snowfall-multi 20s linear infinite;
-    opacity: 0.8;
+      radial-gradient(1px 1px at 20% 20%, white, transparent),
+      radial-gradient(1px 1px at 40% 40%, white, transparent),
+      radial-gradient(2px 2px at 60% 30%, white, transparent),
+      radial-gradient(1px 1px at 80% 50%, white, transparent),
+      radial-gradient(1px 1px at 90% 10%, white, transparent),
+      radial-gradient(2px 2px at 10% 60%, white, transparent),
+      radial-gradient(1px 1px at 30% 80%, white, transparent),
+      radial-gradient(1px 1px at 50% 70%, white, transparent),
+      radial-gradient(2px 2px at 70% 85%, white, transparent),
+      radial-gradient(1px 1px at 85% 75%, white, transparent);
+    background-size: 200px 200px, 250px 250px, 300px 300px, 350px 350px, 400px 400px,
+                     180px 180px, 220px 220px, 280px 280px, 320px 320px, 360px 360px;
+    background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 150px 50px,
+                        200px 150px, 100px 200px, 50px 250px, 180px 80px, 250px 220px;
+    animation: twinkle 3s ease-in-out infinite, moveStars 120s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(0.5px);
   }
   
-  @keyframes snowfall-multi {
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.4; }
+  }
+  
+  @keyframes moveStars {
     0% {
-      background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 150px 50px, 200px 150px, 100px 200px;
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.8;
-    }
-    50% {
-      opacity: 0.6;
-    }
-    80% {
-      opacity: 0.3;
+      transform: translateY(0);
     }
     100% {
-      background-position: 0 400px, 40px 460px, 130px 670px, 70px 500px, 150px 450px, 200px 550px, 100px 600px;
-      opacity: 0;
+      transform: translateY(-100px);
     }
   }
   
@@ -89,7 +62,7 @@
 
 @layer utilities {
   .glass {
-    @apply bg-white bg-opacity-20 backdrop-blur-xl border-2 border-red-300 border-opacity-40 shadow-2xl;
+    @apply bg-white bg-opacity-15 backdrop-blur-xl border-2 border-yellow-300 border-opacity-30 shadow-2xl;
   }
   
   .btn-primary {
@@ -101,7 +74,7 @@
   .btn-secondary {
     @apply bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 
            text-white font-bold py-3 px-6 rounded-xl shadow-2xl transform transition 
-           hover:scale-105 active:scale-95 border-2 border-red-300;
+           hover:scale-105 active:scale-95 border-2 border-yellow-300;
   }
   
   .btn-mystery {

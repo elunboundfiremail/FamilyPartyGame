@@ -112,27 +112,39 @@ function ChristmasDecorations() {
         </motion.div>
       ))}
 
-      {/* Copos de nieve grandes flotantes (opcionales, más visibles) */}
-      {[...Array(5)].map((_, i) => (
+      {/* Copos de nieve cayendo suavemente - Se desvanecen a mitad */}
+      {[...Array(20)].map((_, i) => (
         <motion.div
           key={`snowflake-${i}`}
+          initial={{
+            y: -50,
+            x: Math.random() * window.innerWidth,
+            opacity: 0,
+            scale: 0.3 + Math.random() * 0.7
+          }}
           animate={{
-            y: ['0vh', '100vh'],
-            x: [0, Math.sin(i) * 50, 0],
+            y: window.innerHeight * 0.6, // Solo hasta el 60% de la pantalla
+            x: Math.random() * window.innerWidth + Math.sin(i) * 30,
+            opacity: [0, 0.8, 0.8, 0],
             rotate: [0, 360]
           }}
           transition={{
-            duration: 15 + i * 2,
+            duration: 8 + Math.random() * 6,
             repeat: Infinity,
             ease: "linear",
-            delay: i * 2
+            delay: i * 0.5,
+            opacity: {
+              duration: 8 + Math.random() * 6,
+              times: [0, 0.2, 0.7, 1] // Aparece, se mantiene, desaparece
+            }
           }}
-          className="fixed text-4xl pointer-events-none opacity-60"
+          className="fixed text-2xl pointer-events-none"
           style={{
-            left: `${10 + i * 20}%`,
-            top: '-50px',
-            filter: 'blur(0.5px)',
-            zIndex: 9999
+            left: 0,
+            top: 0,
+            filter: 'blur(1px)',
+            zIndex: 9999,
+            textShadow: '0 0 5px rgba(255,255,255,0.8)'
           }}
         >
           ❄️
