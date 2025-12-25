@@ -7,43 +7,71 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
     'bg-orange-500', 'bg-teal-500', 'bg-lime-500', 'bg-rose-500'
   ];
   
-  // Crear un camino serpenteante tipo gusano (no cuadrado)
-  const createSnakeLayout = () => {
+  // Generar patrón aleatorio del tablero
+  const createRandomLayout = () => {
+    const patterns = ['snake', 'spiral', 'zigzag'];
+    const selectedPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    
     const positions = [];
     
-    // Crear un camino serpenteante más orgánico
-    // Patrón: va en zigzag con curvas suaves
-    const pattern = [
-      // Fila 1 (inicio) - de izquierda a derecha
-      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 0 },
-      // Curva hacia abajo-derecha
-      { x: 6, y: 1 },
-      // Fila 2 - de derecha a izquierda
-      { x: 6, y: 2 }, { x: 5, y: 2 }, { x: 4, y: 2 }, { x: 3, y: 2 }, { x: 2, y: 2 }, { x: 1, y: 2 },
-      // Curva hacia abajo-izquierda
-      { x: 0, y: 3 },
-      // Fila 3 - de izquierda a derecha
-      { x: 0, y: 4 }, { x: 1, y: 4 }, { x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 4 },
-      // Curva hacia abajo-derecha
-      { x: 6, y: 5 },
-      // Fila 4 - de derecha a izquierda
-      { x: 6, y: 6 }, { x: 5, y: 6 }, { x: 4, y: 6 }, { x: 3, y: 6 }, { x: 2, y: 6 }, { x: 1, y: 6 },
-      // Final
-      { x: 0, y: 7 }, { x: 0, y: 8 }
-    ];
-    
-    for (let i = 0; i < Math.min(totalSpaces, pattern.length); i++) {
-      positions.push({
-        position: i,
-        x: pattern[i].x,
-        y: pattern[i].y
-      });
+    if (selectedPattern === 'snake') {
+      // Patrón serpiente
+      let x = 0, y = 0;
+      const cols = 6;
+      
+      for (let i = 0; i < totalSpaces; i++) {
+        positions.push({ position: i, x, y });
+        
+        const row = Math.floor(i / cols);
+        const isReversed = row % 2 !== 0;
+        
+        if ((i + 1) % cols === 0 && i < totalSpaces - 1) {
+          y += 2;
+          if (isReversed) x = 0;
+          else x = cols - 1;
+        } else {
+          x += isReversed ? -1 : 1;
+        }
+      }
+    } else if (selectedPattern === 'spiral') {
+      // Patrón caracol (de afuera hacia adentro)
+      const grid = Array(8).fill().map(() => Array(8).fill(false));
+      let x = 0, y = 0;
+      let dx = 1, dy = 0;
+      
+      for (let i = 0; i < Math.min(totalSpaces, 30); i++) {
+        positions.push({ position: i, x, y });
+        grid[y][x] = true;
+        
+        const nextX = x + dx;
+        const nextY = y + dy;
+        
+        if (nextX < 0 || nextX >= 8 || nextY < 0 || nextY >= 8 || grid[nextY]?.[nextX]) {
+          [dx, dy] = [-dy, dx];
+        }
+        
+        x += dx;
+        y += dy;
+      }
+    } else {
+      // Patrón zigzag
+      for (let i = 0; i < totalSpaces; i++) {
+        const row = Math.floor(i / 5);
+        const col = i % 5;
+        const isEven = row % 2 === 0;
+        
+        positions.push({
+          position: i,
+          x: isEven ? col : 4 - col,
+          y: row * 2
+        });
+      }
     }
     
     return positions;
   };
 
-  const layout = createSnakeLayout();
+  const layout = createRandomLayout();
 
   const getSpaceType = (position) => {
     if (position === 0) return { emoji: '🏁', type: 'start', color: 'from-green-400 to-green-600' };
@@ -67,17 +95,27 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <div className="glass rounded-2xl p-6">
-        {/* Tablero con scroll vertical para ver todas las casillas */}
-        <div className="relative overflow-y-auto overflow-x-hidden" style={{ maxHeight: '70vh', height: 'auto' }}>
-          <div className="relative" style={{ minHeight: '650px', paddingBottom: '40px' }}>
+      <div className="glass rounded-2xl p-4 sm:p-6">
+        {/* Tablero con scroll vertical TÁCTIL para móviles */}
+        <div 
+          className="relative overflow-y-auto overflow-x-hidden touch-pan-y" 
+          style={{ 
+            maxHeight: '65vh',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
+          <div className="relative" style={{ minHeight: '750px', paddingBottom: '80px' }}>
             {layout.map((space) => {
               const spaceInfo = getSpaceType(space.position);
               const playersHere = getPlayersOnSpace(space.position);
               
-              // Calcular posición en la pantalla
-              const left = space.x * 90 + 10;
-              const top = space.y * 75 + 10;
+              // Calcular posición RESPONSIVE
+              const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+              const spacing = isMobile ? 60 : 90;
+              const vSpacing = isMobile ? 65 : 75;
+              const left = space.x * spacing + (isMobile ? 5 : 10);
+              const top = space.y * vSpacing + (isMobile ? 5 : 10);
               
               return (
                 <motion.div
@@ -91,8 +129,8 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                     left: `${left}px`,
                     top: `${top}px`
                   }}
-                  className={`w-20 h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
-                            shadow-lg flex flex-col items-center justify-center border-3 border-white border-opacity-50`}
+                  className={`w-14 h-14 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
+                            shadow-lg flex flex-col items-center justify-center border-2 sm:border-3 border-white border-opacity-50`}
                 >
                   {/* Línea conectora al siguiente - MEJORADA */}
                   {space.position < totalSpaces - 1 && layout[space.position + 1] && (

@@ -78,7 +78,7 @@ export const penitencias = [
 ];
 
 export const preguntasConversacion = [
-  // Sobre el año actual
+  // Sobre el año actual y experiencias recientes
   "¿Qué fue lo mejor que te pasó este año?",
   "¿Cuál fue tu mayor desafío este año y cómo lo superaste?",
   "¿Qué fue lo más gracioso que te pasó este año?",
@@ -143,6 +143,43 @@ export const preguntasConversacion = [
   "¿Alguna vez hiciste algo muy valiente?",
   "¿Cuál fue la decisión más difícil que tomaste?",
   "¿Hay algo que te gustaría hacer antes de que termine el año?",
+  
+  // Preguntas profundas para compartir con la familia
+  "Comparte un momento de este año en el que te sentiste muy feliz",
+  "¿Qué cosa nueva aprendiste este año que te gustaría compartir?",
+  "Cuenta algo divertido o vergonzoso que te pasó este año",
+  "¿Hubo algún momento este año en el que necesitaste ayuda? ¿Qué pasó?",
+  "¿Qué fue lo más difícil que enfrentaste este año y cómo lo superaste?",
+  "Comparte un logro del que estés orgulloso de este año",
+  "¿Hay algo que hiciste este año por primera vez?",
+  "¿Qué persona tuvo el mayor impacto en tu vida este año?",
+  "Cuenta una experiencia que te cambió la perspectiva este año",
+  "¿Qué es lo que más extrañas de este año?",
+  "¿Hubo algún momento este año en el que ayudaste a alguien?",
+  "Comparte algo que descubriste sobre ti mismo este año",
+  "¿Qué canción o película te marcó este año y por qué?",
+  "Cuenta un momento memorable con esta familia de este año",
+  "¿Qué te gustaría mejorar o cambiar para el próximo año?",
+  "Comparte algo que te hizo llorar de risa este año",
+  "¿Hubo algún momento este año en el que te sentiste muy valiente?",
+  "¿Qué es lo que más te gusta de cómo eres ahora comparado con el año pasado?",
+  "Cuenta una historia que nunca has compartido con la familia",
+  "¿Qué es algo que siempre quisiste decirle a alguien de la familia?",
+  "Comparte un recuerdo de infancia que te hace sonreír",
+  "¿Qué tradición familiar te gustaría empezar o continuar?",
+  "¿Hay algo que te gustaría agradecerle a alguien de la familia?",
+  "Comparte algo que te preocupa y que tal vez la familia pueda ayudarte",
+  "¿Qué es lo que más valoras de estar con esta familia?",
+  "Cuenta un momento en el que te sentiste muy apoyado por la familia",
+  "¿Qué es algo que aprendiste de alguien de esta familia?",
+  "Comparte tu momento favorito de una reunión familiar",
+  "¿Hay algún consejo que te gustaría darle a los más jóvenes de la familia?",
+  "¿Qué es algo que admiras de cada persona aquí presente?",
+  "Comparte una meta o sueño que tengas para el próximo año",
+  "¿Qué es algo que te gustaría hacer más seguido con la familia?",
+  "Cuenta algo que te hizo sentir agradecido este año",
+  "¿Hay algo que te arrepientes de no haber hecho este año?",
+  "Comparte una lección importante que aprendiste este año",
 ];
 
 // Nuevos minijuegos
