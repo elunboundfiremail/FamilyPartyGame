@@ -108,4 +108,5 @@ function Home({ onCreateRoom, onJoinRoom }) {
     </div>
   );
 }
-
+
+export default Home;
