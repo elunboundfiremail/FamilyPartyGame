@@ -136,11 +136,11 @@ function CircuitBoard({ players, totalSpaces = 30, boardPattern = 'snake' }) {
         
         {/* Tablero con scroll y zoom */}
         <div 
-          className="relative overflow-auto touch-pan-y" 
+          className="relative overflow-auto" 
           style={{ 
             maxHeight: '70vh',
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            touchAction: 'pan-x pan-y'
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
