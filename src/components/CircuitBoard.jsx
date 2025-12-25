@@ -93,29 +93,79 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
     return players.filter(p => (p.position || 0) === position);
   };
 
+  const [scale, setScale] = React.useState(1);
+  const [lastTouchDistance, setLastTouchDistance] = React.useState(0);
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+      setLastTouchDistance(distance);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+      
+      if (lastTouchDistance > 0) {
+        const delta = distance - lastTouchDistance;
+        const newScale = Math.max(0.5, Math.min(2, scale + delta * 0.01));
+        setScale(newScale);
+      }
+      
+      setLastTouchDistance(distance);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setLastTouchDistance(0);
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <div className="glass rounded-2xl p-4 sm:p-6">
-        {/* Tablero con scroll vertical TÁCTIL para móviles */}
+      <div className="glass rounded-2xl p-2 sm:p-6">
+        {/* Indicador de zoom en móviles */}
+        <div className="block sm:hidden text-center mb-2 text-yellow-200 text-xs">
+          🔍 Usa dos dedos para hacer zoom • Desliza para ver más
+        </div>
+        
+        {/* Tablero con scroll y zoom */}
         <div 
-          className="relative overflow-y-auto overflow-x-hidden touch-pan-y" 
+          className="relative overflow-auto touch-pan-y" 
           style={{ 
-            maxHeight: '65vh',
+            maxHeight: '70vh',
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain'
           }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          <div className="relative" style={{ minHeight: '750px', paddingBottom: '80px' }}>
+          <div 
+            className="relative transition-transform duration-200" 
+            style={{ 
+              minHeight: '800px',
+              minWidth: '100%',
+              paddingBottom: '100px',
+              transform: `scale(${scale})`,
+              transformOrigin: 'top left'
+            }}
+          >
             {layout.map((space) => {
               const spaceInfo = getSpaceType(space.position);
               const playersHere = getPlayersOnSpace(space.position);
               
-              // Calcular posición RESPONSIVE
+              // Calcular posición MÁS PEQUEÑA para móviles
               const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-              const spacing = isMobile ? 60 : 90;
-              const vSpacing = isMobile ? 65 : 75;
-              const left = space.x * spacing + (isMobile ? 5 : 10);
-              const top = space.y * vSpacing + (isMobile ? 5 : 10);
+              const spacing = isMobile ? 50 : 90;
+              const vSpacing = isMobile ? 55 : 75;
+              const left = space.x * spacing + (isMobile ? 3 : 10);
+              const top = space.y * vSpacing + (isMobile ? 3 : 10);
               
               return (
                 <motion.div
@@ -129,19 +179,19 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                     left: `${left}px`,
                     top: `${top}px`
                   }}
-                  className={`w-14 h-14 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
-                            shadow-lg flex flex-col items-center justify-center border-2 sm:border-3 border-white border-opacity-50`}
+                  className={`w-12 h-12 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl bg-gradient-to-br ${spaceInfo.color} 
+                            shadow-lg flex flex-col items-center justify-center border-2 border-white border-opacity-50`}
                 >
-                  {/* Línea conectora al siguiente - MEJORADA */}
+                  {/* Línea conectora al siguiente - RESPONSIVE */}
                   {space.position < totalSpaces - 1 && layout[space.position + 1] && (
                     <svg 
-                      className="absolute pointer-events-none"
+                      className="absolute pointer-events-none hidden sm:block"
                       style={{
                         position: 'absolute',
                         left: '40px',
                         top: '40px',
-                        width: `${Math.abs((layout[space.position + 1].x - space.x) * 90) + 100}px`,
-                        height: `${Math.abs((layout[space.position + 1].y - space.y) * 75) + 100}px`,
+                        width: `${Math.abs((layout[space.position + 1].x - space.x) * spacing) + 100}px`,
+                        height: `${Math.abs((layout[space.position + 1].y - space.y) * vSpacing) + 100}px`,
                         zIndex: -1,
                         overflow: 'visible'
                       }}
@@ -149,24 +199,24 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                       <line
                         x1="0"
                         y1="0"
-                        x2={(layout[space.position + 1].x - space.x) * 90}
-                        y2={(layout[space.position + 1].y - space.y) * 75}
+                        x2={(layout[space.position + 1].x - space.x) * spacing}
+                        y2={(layout[space.position + 1].y - space.y) * vSpacing}
                         stroke="#FCD34D"
-                        strokeWidth="4"
-                        strokeOpacity="0.5"
-                        strokeDasharray="5,5"
+                        strokeWidth="3"
+                        strokeOpacity="0.4"
+                        strokeDasharray="4,4"
                       />
                     </svg>
                   )}
                 
-                {/* Número de casilla - MÁS VISIBLE */}
-                <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-70 rounded-full w-7 h-7 flex items-center justify-center border border-yellow-300">
-                  <span className="text-sm font-bold text-white">{space.position + 1}</span>
+                {/* Número de casilla - RESPONSIVE */}
+                <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-70 rounded-full w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center border border-yellow-300">
+                  <span className="text-xs sm:text-sm font-bold text-white">{space.position + 1}</span>
                 </div>
                 
-                {/* Emoji del tipo de casilla - ANIMADO */}
+                {/* Emoji del tipo de casilla - ANIMADO Y RESPONSIVE */}
                 <motion.div 
-                  className="text-2xl sm:text-3xl"
+                  className="text-xl sm:text-3xl"
                   animate={{
                     scale: [1, 1.1, 1],
                     rotate: [0, 5, -5, 0]
@@ -180,9 +230,9 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                   {spaceInfo.emoji}
                 </motion.div>
                 
-                {/* Jugadores en esta casilla */}
+                {/* Jugadores en esta casilla - RESPONSIVE */}
                 {playersHere.length > 0 && (
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-0.5 flex-wrap max-w-[80px] justify-center">
+                  <div className="absolute -bottom-1 sm:-bottom-2 left-1/2 transform -translate-x-1/2 flex gap-0.5 flex-wrap max-w-[60px] sm:max-w-[80px] justify-center">
                     {playersHere.map((player) => {
                       const playerIndex = players.indexOf(player);
                       return (
@@ -190,9 +240,9 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                           key={player.id}
                           initial={{ scale: 0, y: -10 }}
                           animate={{ scale: 1, y: 0 }}
-                          className={`w-6 h-6 rounded-full ${playerColors[playerIndex % playerColors.length]} 
-                                   border-2 border-white shadow-lg flex items-center justify-center 
-                                   text-xs font-bold text-white`}
+                          className={`w-4 h-4 sm:w-6 sm:h-6 rounded-full ${playerColors[playerIndex % playerColors.length]} 
+                                   border border-white sm:border-2 shadow-lg flex items-center justify-center 
+                                   text-[8px] sm:text-xs font-bold text-white`}
                         >
                           {player.name[0].toUpperCase()}
                         </motion.div>
@@ -201,14 +251,14 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
                   </div>
                 )}
                 
-                {/* Etiqueta especial para inicio y meta */}
+                {/* Etiqueta especial para inicio y meta - RESPONSIVE */}
                 {space.position === 0 && (
-                  <div className="absolute -top-7 text-sm font-bold text-green-400 bg-black bg-opacity-60 px-2 py-1 rounded whitespace-nowrap">
+                  <div className="absolute -top-5 sm:-top-7 text-xs sm:text-sm font-bold text-green-400 bg-black bg-opacity-60 px-1 sm:px-2 py-0.5 sm:py-1 rounded whitespace-nowrap">
                     🏁 INICIO
                   </div>
                 )}
                 {space.position === totalSpaces - 1 && (
-                  <div className="absolute -top-7 text-sm font-bold text-yellow-400 bg-black bg-opacity-60 px-2 py-1 rounded whitespace-nowrap">
+                  <div className="absolute -top-5 sm:-top-7 text-xs sm:text-sm font-bold text-yellow-400 bg-black bg-opacity-60 px-1 sm:px-2 py-0.5 sm:py-1 rounded whitespace-nowrap">
                     🏆 META
                   </div>
                 )}
