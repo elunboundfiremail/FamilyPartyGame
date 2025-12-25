@@ -138,7 +138,7 @@ function CircuitBoard({ players, totalSpaces = 30, boardPattern = 'snake' }) {
         <div 
           className="relative overflow-auto" 
           style={{ 
-            maxHeight: '70vh',
+            maxHeight: '50vh',
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-x pan-y'
           }}

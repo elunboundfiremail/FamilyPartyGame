@@ -156,7 +156,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   const isMyTurn = currentPlayer?.id === players.find(p => p.isMe)?.id;
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen p-4 pb-32">
       <div className="max-w-6xl mx-auto">
         {/* Header con información de la sala */}
         <div className="glass rounded-xl p-4 mb-4 text-white">
@@ -176,7 +176,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
           {/* Panel lateral de jugadores */}
           <div className="lg:col-span-1 space-y-3">
             <h3 className="text-white font-bold text-xl mb-3">👥 Jugadores ({players.length})</h3>
-            <div className="max-h-[600px] overflow-y-auto space-y-3 pr-2">
+            <div className="max-h-[400px] lg:max-h-[600px] overflow-y-auto space-y-3 pr-2">
               {players.map((player, index) => (
                 <PlayerCard 
                   key={player.id}
@@ -195,29 +195,29 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
               
               {/* Nuevo tablero en forma de circuito */}
               <CircuitBoard players={players} totalSpaces={boardSpaces} boardPattern={room.boardPattern} />
-
-              {/* Controles del turno */}
-              <div className="text-center mt-6">
-                {isMyTurn ? (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleRollDice}
-                    disabled={showDice || showMiniGame || showVoting}
-                    className="btn-primary text-2xl disabled:opacity-50"
-                  >
-                    🎲 Lanzar Dado
-                  </motion.button>
-                ) : (
-                  <div className="glass rounded-xl p-4">
-                    <p className="text-purple-200">
-                      ⏳ Esperando el turno de {currentPlayer?.name}...
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
+        </div>
+
+        {/* Controles del turno - FUERA del grid, siempre visible */}
+        <div className="text-center mt-6 mb-8">
+          {isMyTurn ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleRollDice}
+              disabled={showDice || showMiniGame || showVoting}
+              className="btn-primary text-2xl disabled:opacity-50"
+            >
+              🎲 Lanzar Dado
+            </motion.button>
+          ) : (
+            <div className="glass rounded-xl p-4 max-w-md mx-auto">
+              <p className="text-purple-200">
+                ⏳ Esperando el turno de {currentPlayer?.name}...
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
