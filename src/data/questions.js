@@ -89,6 +89,11 @@ export const preguntasConversacion = [
   "¿Qué persona conociste este año que dejó huella en ti?",
   "¿Cuál fue tu logro más importante este año?",
   "Si pudieras revivir un día de este año, ¿cuál sería?",
+  "¿Qué momento de este año te gustaría olvidar?",
+  "¿Qué es lo más valiente que hiciste este año?",
+  "¿Qué promesa te hiciste a ti mismo este año?",
+  "¿Qué fue lo más sorprendente que te pasó este año?",
+  "¿Hubo algún momento este año que te hizo llorar de felicidad?",
   
   // Memorias y familia
   "¿Cuál es tu recuerdo favorito de la infancia?",
@@ -99,6 +104,13 @@ export const preguntasConversacion = [
   "¿Cuál fue tu viaje familiar favorito?",
   "¿Qué te enseñó tu familia que más valoras?",
   "¿Hay alguna anécdota familiar que siempre cuentas?",
+  "¿Qué comida familiar te trae los mejores recuerdos?",
+  "¿Cuál es tu tradición navideña favorita con la familia?",
+  "¿Qué juego jugabas de niño con tus hermanos o primos?",
+  "¿Cuál es el mejor consejo que te dio un familiar?",
+  "¿Qué foto familiar es tu favorita y por qué?",
+  "¿Hay alguna frase que siempre decía alguien de tu familia?",
+  "¿Cuál es tu memoria más antigua con la familia?",
   
   // Sueños y aspiraciones
   "¿Cuál es tu sueño más grande?",
@@ -107,6 +119,10 @@ export const preguntasConversacion = [
   "Si pudieras aprender cualquier habilidad al instante, ¿cuál sería?",
   "¿Qué lugar del mundo te gustaría conocer y por qué?",
   "Si pudieras tener cualquier trabajo, ¿cuál elegirías?",
+  "¿Qué te gustaría estudiar si pudieras volver a empezar?",
+  "¿Cuál es tu mayor meta personal para el próximo año?",
+  "Si pudieras escribir un libro, ¿de qué sería?",
+  "¿Qué te gustaría que te recordaran cuando seas mayor?",
   
   // Reflexiones personales
   "¿Qué te hace verdaderamente feliz?",
@@ -115,12 +131,22 @@ export const preguntasConversacion = [
   "¿Qué es lo que más te gusta de ti mismo?",
   "¿Cuál ha sido el mejor consejo que has recibido?",
   "¿Qué te gustaría que la gente supiera de ti?",
+  "¿Cuál es tu mayor fortaleza?",
+  "¿Qué es algo que te gustaría cambiar de ti?",
+  "¿Qué te hace sentir en paz?",
+  "¿Cuál es tu definición de éxito?",
+  "¿Qué actividad te hace perder la noción del tiempo?",
+  "¿Qué te hace sentir más vivo?",
   
   // Sobre otros
   "¿Quién es tu mayor inspiración y por qué?",
   "¿Qué persona de tu vida te ha ayudado más?",
   "Si pudieras cenar con cualquier persona (viva o muerta), ¿quién sería?",
   "¿Qué es lo que más admiras en las personas?",
+  "¿Quién te enseñó la lección más importante de tu vida?",
+  "¿Hay alguien a quien te gustaría agradecer públicamente?",
+  "¿Qué cualidad buscas en un amigo verdadero?",
+  "¿Quién fue tu mejor maestro y qué te enseñó?",
   
   // Gustos y preferencias
   "¿Cuál es tu película favorita y por qué?",
@@ -129,6 +155,11 @@ export const preguntasConversacion = [
   "¿Qué libro o película te marcó profundamente?",
   "¿Cuál es tu pasatiempo favorito?",
   "¿Qué te hace reír sin control?",
+  "¿Cuál es tu canción favorita y qué recuerdos te trae?",
+  "¿Qué programa de TV nunca te cansas de ver?",
+  "¿Cuál es tu estación del año favorita y por qué?",
+  "¿Qué olor te trae los mejores recuerdos?",
+  "¿Cuál es tu lugar favorito para relajarte?",
   
   // Preguntas profundas
   "Si pudieras cambiar algo del mundo, ¿qué sería?",
@@ -136,6 +167,11 @@ export const preguntasConversacion = [
   "Si tuvieras un millón de dólares, ¿qué harías?",
   "¿Qué es lo que más valoras en una amistad?",
   "¿Cuál crees que es el sentido de la vida?",
+  "Si pudieras viajar en el tiempo, ¿irías al pasado o al futuro?",
+  "¿Qué harías si supieras que no puedes fallar?",
+  "¿Cuál es tu mayor arrepentimiento?",
+  "¿Qué es lo más importante que has aprendido en la vida?",
+  "¿Qué te gustaría que dijera tu epitafio?",
   
   // Momentos especiales
   "¿Cuál fue el mejor regalo que recibiste?",
@@ -143,6 +179,11 @@ export const preguntasConversacion = [
   "¿Alguna vez hiciste algo muy valiente?",
   "¿Cuál fue la decisión más difícil que tomaste?",
   "¿Hay algo que te gustaría hacer antes de que termine el año?",
+  "¿Cuál fue el mejor cumpleaños de tu vida?",
+  "¿Cuál fue el peor día que se convirtió en el mejor día?",
+  "¿Alguna vez tuviste un encuentro que cambió tu vida?",
+  "¿Cuál es el cumplido más bonito que te han hecho?",
+  "¿Cuál fue el momento más feliz de tu vida hasta ahora?",
   
   // Preguntas profundas para compartir con la familia
   "Comparte un momento de este año en el que te sentiste muy feliz",
@@ -180,6 +221,14 @@ export const preguntasConversacion = [
   "Cuenta algo que te hizo sentir agradecido este año",
   "¿Hay algo que te arrepientes de no haber hecho este año?",
   "Comparte una lección importante que aprendiste este año",
+  "¿Qué recuerdo familiar te hace sonreír cada vez que lo piensas?",
+  "¿Cuál es tu juego familiar favorito y por qué?",
+  "¿Qué es lo que más te gusta hacer en familia?",
+  "¿Hay alguna historia familiar que te encante escuchar?",
+  "¿Qué momento de unión familiar valoras más?",
+  "¿Cuál es tu celebración familiar favorita?",
+  "¿Qué costumbre familiar te gustaría que nunca cambiara?",
+  "¿Qué es lo que más aprecias de tu familia?",
 ];
 
 // Nuevos minijuegos

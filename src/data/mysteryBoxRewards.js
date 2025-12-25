@@ -1,28 +1,14 @@
 // Recompensas y castigos de las Cajas Sorpresa
 
 export const mysteryBoxRewards = {
-  // Premios Buenos (50% de probabilidad)
+  // Premios Buenos (50% de probabilidad) - REDUCIDOS
   good: [
-    { 
-      type: 'points', 
-      value: 20, 
-      emoji: '⭐', 
-      title: '¡Regalo de Santa!', 
-      message: '¡Santa te dio +20 puntos!' 
-    },
     { 
       type: 'advance', 
       value: 3, 
       emoji: '🚀', 
       title: '¡Trineo Turbo!', 
       message: '¡Avanzas 3 casillas extra!' 
-    },
-    { 
-      type: 'immunity', 
-      value: 1, 
-      emoji: '🛡️', 
-      title: 'Escudo Navideño', 
-      message: '¡Inmunidad en la siguiente penitencia!' 
     },
     { 
       type: 'double', 
@@ -33,29 +19,15 @@ export const mysteryBoxRewards = {
     },
     { 
       type: 'points', 
-      value: 15, 
+      value: 10, 
       emoji: '🎁', 
       title: '¡Regalo Especial!', 
-      message: '¡Encontraste +15 puntos!' 
-    },
-    { 
-      type: 'steal', 
-      value: 10, 
-      emoji: '🎅', 
-      title: 'Santa Ladrón', 
-      message: '¡Robas 10 puntos al primer lugar!' 
+      message: '¡Encontraste +10 puntos!' 
     },
   ],
   
-  // Premios Malos (30% de probabilidad)
+  // Premios Malos (30% de probabilidad) - REDUCIDOS
   bad: [
-    { 
-      type: 'points', 
-      value: -5, 
-      emoji: '😱', 
-      title: '¡Carbón!', 
-      message: 'Te portaste mal... Pierdes 5 puntos (si tienes)' 
-    },
     { 
       type: 'retreat', 
       value: -2, 
@@ -69,13 +41,6 @@ export const mysteryBoxRewards = {
       emoji: '❌', 
       title: 'Congelado', 
       message: '¡Pierdes tu próximo turno!' 
-    },
-    { 
-      type: 'swap_position', 
-      value: 0, 
-      emoji: '🔄', 
-      title: 'Teletransporte', 
-      message: '¡Intercambias posición con el último jugador!' 
     },
   ],
   
@@ -101,13 +66,6 @@ export const mysteryBoxRewards = {
       emoji: '🔢', 
       title: 'Cuenta Regalos', 
       message: 'Resuelve cálculos rápidos' 
-    },
-    { 
-      type: 'all_dice', 
-      value: 0, 
-      emoji: '🎲', 
-      title: 'Ruleta Navideña', 
-      message: 'Todos tiran el dado, el menor pierde 10 pts' 
     },
   ]
 };

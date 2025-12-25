@@ -70,9 +70,21 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         setShowMysteryResult(true);
       }
     } else {
-      // Casilla normal - ALEATORIA (no predefinida por posición)
-      const spaceTypes = ['trivia', 'acertijo', 'reto', 'rapido', 'conversacion', 'penitencia'];
-      const randomType = spaceTypes[Math.floor(Math.random() * spaceTypes.length)];
+      // Casilla normal - ALEATORIA con más peso a conversación
+      const random = Math.random();
+      let randomType;
+      
+      if (random < 0.40) { // 40% Conversación
+        randomType = 'conversacion';
+      } else if (random < 0.60) { // 20% Trivia
+        randomType = 'trivia';
+      } else if (random < 0.75) { // 15% Reto
+        randomType = 'reto';
+      } else if (random < 0.90) { // 15% Acertijo
+        randomType = 'acertijo';
+      } else { // 10% Desafío rápido
+        randomType = 'rapido';
+      }
       
       setMiniGameData({
         type: randomType,
@@ -245,7 +257,11 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         )}
         
         {showMysteryBox && (
-          <MysteryBox onChoice={handleMysteryChoice} />
+          <MysteryBox 
+            onChoice={handleMysteryChoice}
+            currentPosition={currentPlayer?.position || 0}
+            diceResult={diceResult}
+          />
         )}
         
         {showMysteryResult && mysteryReward && (

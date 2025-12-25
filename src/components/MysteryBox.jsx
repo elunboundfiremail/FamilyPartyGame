@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function MysteryBox({ onChoice }) {
+function MysteryBox({ onChoice, currentPosition, diceResult }) {
   const [showChoice, setShowChoice] = useState(true);
 
   const handleNormalChoice = () => {
@@ -13,6 +13,27 @@ function MysteryBox({ onChoice }) {
     setShowChoice(false);
     setTimeout(() => onChoice('mystery'), 500);
   };
+
+  // Calcular nueva posición
+  const newPosition = Math.min((currentPosition || 0) + diceResult, 30);
+
+  // Determinar tipo de casilla de forma aleatoria pero con más peso a conversación
+  const getCasillaInfo = () => {
+    const random = Math.random();
+    if (random < 0.40) { // 40% Conversación (antes 16.6%)
+      return { tipo: 'Pregunta Familiar', emoji: '💬', color: 'from-pink-500 to-rose-600' };
+    } else if (random < 0.60) { // 20% Trivia
+      return { tipo: 'Trivia', emoji: '🎯', color: 'from-blue-500 to-cyan-600' };
+    } else if (random < 0.75) { // 15% Reto
+      return { tipo: 'Reto Físico', emoji: '💪', color: 'from-orange-500 to-red-600' };
+    } else if (random < 0.90) { // 15% Acertijo
+      return { tipo: 'Acertijo', emoji: '🧩', color: 'from-purple-500 to-indigo-600' };
+    } else { // 10% Otros
+      return { tipo: 'Desafío Rápido', emoji: '⚡', color: 'from-yellow-500 to-amber-600' };
+    }
+  };
+
+  const casillaInfo = getCasillaInfo();
 
   return (
     <AnimatePresence>
@@ -29,10 +50,15 @@ function MysteryBox({ onChoice }) {
             className="glass rounded-3xl p-8 max-w-2xl w-full text-white"
           >
             <div className="text-center mb-6">
-              <div className="text-6xl mb-3">🎁</div>
-              <h2 className="text-4xl font-bold mb-2">¡Elige tu Destino!</h2>
-              <p className="text-xl text-red-200">
-                ¿Quieres jugar normal o arriesgarte con una sorpresa?
+              <div className="text-6xl mb-3">🎲</div>
+              <h2 className="text-4xl font-bold mb-2">¡Caíste en la casilla {newPosition}!</h2>
+              <div className={`inline-block bg-gradient-to-r ${casillaInfo.color} px-6 py-3 rounded-xl mt-3 shadow-lg`}>
+                <p className="text-2xl font-bold">
+                  {casillaInfo.emoji} {casillaInfo.tipo}
+                </p>
+              </div>
+              <p className="text-xl text-purple-200 mt-4">
+                ¿Qué quieres hacer?
               </p>
             </div>
 
@@ -44,13 +70,13 @@ function MysteryBox({ onChoice }) {
                 onClick={handleNormalChoice}
                 className="bg-gradient-to-br from-green-500 to-green-700 p-8 rounded-2xl border-4 border-yellow-300 shadow-2xl"
               >
-                <div className="text-6xl mb-4">🎮</div>
-                <h3 className="text-2xl font-bold mb-2">Casilla Normal</h3>
+                <div className="text-6xl mb-4">{casillaInfo.emoji}</div>
+                <h3 className="text-2xl font-bold mb-2">Hacer el Reto</h3>
                 <p className="text-sm text-green-100">
-                  Juega el minijuego de la casilla donde caíste
+                  Juega: <strong>{casillaInfo.tipo}</strong>
                 </p>
                 <div className="mt-4 text-yellow-200 font-semibold">
-                  ✅ Seguro y predecible
+                  ✅ Gana puntos respondiendo
                 </div>
               </motion.button>
 
@@ -64,7 +90,7 @@ function MysteryBox({ onChoice }) {
                 <div className="text-6xl mb-4">🎁❓</div>
                 <h3 className="text-2xl font-bold mb-2">Caja Sorpresa</h3>
                 <p className="text-sm text-purple-100">
-                  Algo aleatorio: ¡puede ser increíble o terrible!
+                  Ignora el reto y abre una caja misteriosa
                 </p>
                 <div className="mt-4 text-yellow-200 font-semibold">
                   ⚠️ ¡Arriésgate!
@@ -73,8 +99,8 @@ function MysteryBox({ onChoice }) {
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-red-200">
-                💡 <strong>Consejo:</strong> Las cajas sorpresa pueden darte hasta +20 puntos... ¡o hacerte retroceder! 🎲
+              <p className="text-sm text-purple-200">
+                💡 <strong>Consejo:</strong> Los retos dan puntos seguros. Las cajas pueden avanzarte... ¡o retrocederte! 🎲
               </p>
             </div>
           </motion.div>
