@@ -20,7 +20,11 @@ function App() {
     startGame,
     updatePlayerPosition,
     nextTurn,
-    leaveRoom
+    leaveRoom,
+    setVotingState,
+    markAsAnswered,
+    submitVote,
+    clearVotingState
   } = useGameRoom();
 
   const [error, setError] = useState('');
@@ -110,6 +114,10 @@ function App() {
               onRollDice={() => {}}
               onMiniGameComplete={handleMiniGameComplete}
               onEndTurn={handleEndTurn}
+              onSetVotingState={setVotingState}
+              onMarkAsAnswered={markAsAnswered}
+              onSubmitVote={submitVote}
+              onClearVotingState={clearVotingState}
             />
           </motion.div>
         )}

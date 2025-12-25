@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-function SpokenAnswer({ question, players, currentPlayer, onComplete }) {
-  const [answered, setAnswered] = useState(false);
-  const [votes, setVotes] = useState({});
+function SpokenAnswer({ question, players, currentPlayer, onComplete, votingState, onMarkAnswered, onSubmitVote }) {
   const [timeLeft, setTimeLeft] = useState(30);
 
   const myPlayerId = players.find(p => p.isMe)?.id;
   const amIAnswering = currentPlayer.id === myPlayerId;
   const otherPlayers = players.filter(p => p.id !== currentPlayer.id);
+  
+  // Usar datos de Firebase
+  const answered = votingState?.answered || false;
+  const votes = votingState?.votes || {};
 
   useEffect(() => {
     if (answered) {
@@ -37,14 +39,11 @@ function SpokenAnswer({ question, players, currentPlayer, onComplete }) {
   }, [votes, answered, otherPlayers.length]);
 
   const handleAnswered = () => {
-    setAnswered(true);
+    onMarkAnswered();
   };
 
   const handleVote = (playerId, isCorrect) => {
-    setVotes(prev => ({
-      ...prev,
-      [playerId]: isCorrect
-    }));
+    onSubmitVote(playerId, isCorrect);
   };
 
   const calculateResult = () => {

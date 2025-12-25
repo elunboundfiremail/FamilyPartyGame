@@ -150,6 +150,43 @@ export function useGameRoom() {
     }
   };
 
+  const setVotingState = async (questionData) => {
+    if (room) {
+      const roomRef = ref(database, `rooms/${room.code}`);
+      await update(roomRef, {
+        votingState: {
+          active: true,
+          question: questionData,
+          answered: false,
+          votes: {}
+        }
+      });
+    }
+  };
+
+  const markAsAnswered = async () => {
+    if (room) {
+      const votingRef = ref(database, `rooms/${room.code}/votingState`);
+      await update(votingRef, {
+        answered: true
+      });
+    }
+  };
+
+  const submitVote = async (playerId, isCorrect) => {
+    if (room) {
+      const voteRef = ref(database, `rooms/${room.code}/votingState/votes/${playerId}`);
+      await set(voteRef, isCorrect);
+    }
+  };
+
+  const clearVotingState = async () => {
+    if (room) {
+      const votingRef = ref(database, `rooms/${room.code}/votingState`);
+      await remove(votingRef);
+    }
+  };
+
   const leaveRoom = async () => {
     if (room && myPlayerId) {
       const playerRef = ref(database, `rooms/${room.code}/players/${myPlayerId}`);
@@ -179,6 +216,10 @@ export function useGameRoom() {
     startGame,
     updatePlayerPosition,
     nextTurn,
-    leaveRoom
+    leaveRoom,
+    setVotingState,
+    markAsAnswered,
+    submitVote,
+    clearVotingState
   };
 }

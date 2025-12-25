@@ -12,7 +12,7 @@ import SpokenAnswer from './SpokenAnswer';
 import { getRandomReward } from '../data/mysteryBoxRewards';
 import { triviaQuestions, acertijos, retos, preguntasConversacion } from '../data/questions';
 
-function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
+function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn, onSetVotingState, onMarkAsAnswered, onSubmitVote, onClearVotingState }) {
   const [showDice, setShowDice] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showMysteryBox, setShowMysteryBox] = useState(false);
@@ -103,6 +103,9 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
       // Ir directamente a SpokenAnswer (respuesta hablada + votación)
       setSharedQuestionData(question);
       setShowSharedQuestion(true);
+      
+      // Inicializar estado de votación en Firebase
+      onSetVotingState(question);
     }
   };
 
@@ -132,6 +135,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
 
   const handleSharedQuestionComplete = (points, winnerId) => {
     setShowSharedQuestion(false);
+    onClearVotingState(); // Limpiar estado de votación
     onMiniGameComplete(points);
     setTimeout(() => {
       onEndTurn();
@@ -254,6 +258,9 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
             players={players}
             currentPlayer={currentPlayer}
             onComplete={handleSharedQuestionComplete}
+            votingState={room.votingState}
+            onMarkAnswered={onMarkAsAnswered}
+            onSubmitVote={onSubmitVote}
           />
         )}
       </AnimatePresence>
