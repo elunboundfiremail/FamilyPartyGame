@@ -20,20 +20,20 @@ function Lobby({ room, players, isHost, onStartGame, onLeaveRoom }) {
 
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4 text-center">
-            👥 Jugadores ({players.length}/6)
+            👥 Jugadores ({players.length})
           </h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto">
             {players.map((player, index) => (
               <motion.div
                 key={player.id}
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className={`${playerColors[index]} rounded-xl p-4 shadow-lg`}
+                className={`${playerColors[index % playerColors.length]} rounded-xl p-4 shadow-lg`}
               >
                 <div className="flex items-center space-x-3">
                   <div className="text-3xl">
-                    {['🧑', '👨', '👩', '🧔', '👴', '👵'][index]}
+                    {['🧑', '👨', '👩', '🧔', '👴', '👵', '👦', '👧', '🧒', '👶'][index % 10]}
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-lg">{player.name}</p>

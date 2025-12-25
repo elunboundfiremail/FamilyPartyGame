@@ -54,16 +54,11 @@ export function useGameRoom() {
       onValue(roomRef, (snapshot) => {
         if (snapshot.exists()) {
           const roomData = snapshot.val();
-          
-          if (Object.keys(roomData.players || {}).length >= 6) {
-            reject(new Error('La sala está llena (máximo 6 jugadores)'));
-            return;
-          }
 
           const playerId = push(ref(database, `rooms/${roomCode}/players`)).key;
-          const avatars = ['🧑', '👨', '👩', '🧔', '👴', '👵'];
-          const usedAvatars = Object.values(roomData.players).map(p => p.avatar);
-          const availableAvatar = avatars.find(a => !usedAvatars.includes(a)) || '👤';
+          const avatars = ['🧑', '👨', '👩', '🧔', '👴', '👵', '👦', '👧', '🧒', '👶', '🧓', '👩‍🦰', '👨‍🦱', '👱‍♀️', '👱‍♂️'];
+          const playerCount = Object.keys(roomData.players).length;
+          const availableAvatar = avatars[playerCount % avatars.length];
 
           const playerData = {
             id: playerId,
