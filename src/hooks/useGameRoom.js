@@ -19,12 +19,17 @@ export function useGameRoom() {
     const roomRef = ref(database, `rooms/${roomCode}`);
     const playerId = push(ref(database, `rooms/${roomCode}/players`)).key;
 
+    // Generar patrón del tablero UNA SOLA VEZ
+    const patterns = ['snake', 'spiral', 'zigzag'];
+    const boardPattern = patterns[Math.floor(Math.random() * patterns.length)];
+
     const roomData = {
       code: roomCode,
       host: playerId,
       gameState: 'lobby',
       currentPlayerIndex: 0,
       createdAt: Date.now(),
+      boardPattern: boardPattern, // Guardar el patrón
       players: {
         [playerId]: {
           id: playerId,
@@ -39,7 +44,7 @@ export function useGameRoom() {
 
     await set(roomRef, roomData);
     setMyPlayerId(playerId);
-    setRoom({ code: roomCode, host: playerId });
+    setRoom({ code: roomCode, host: playerId, boardPattern });
     
     // Escuchar cambios en la sala
     listenToRoom(roomCode);

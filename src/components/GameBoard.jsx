@@ -98,9 +98,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   };
 
   const handleMiniGameComplete = (points, answer = null, correctAns = null) => {
-    setShowMiniGame(false);
-    
-    // TODAS las preguntas usan el sistema de respuesta hablada con votación
+    // No cerrar el minijuego aún si es de tipo pregunta
     if (miniGameData.type === 'trivia' || miniGameData.type === 'acertijo' || 
         miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
       
@@ -113,7 +111,6 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         question = acertijos[Math.floor(Math.random() * acertijos.length)];
       } else if (miniGameData.type === 'reto') {
         question = retos[Math.floor(Math.random() * retos.length)];
-        // Los retos tienen formato diferente (text en vez de q)
         if (question.text && !question.q) {
           question.q = question.text;
         }
@@ -123,9 +120,11 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
       }
       
       setSharedQuestionData(question);
+      setShowMiniGame(false); // Cerrar ANTES de abrir votación
       setShowSharedQuestion(true);
     } else {
-      // Para minijuegos de botones (tap, memoria, math), dar puntos directamente
+      // Para minijuegos de botones (tap, memoria, math)
+      setShowMiniGame(false);
       onMiniGameComplete(points);
       setTimeout(() => {
         onEndTurn();
@@ -195,7 +194,7 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
               <h3 className="text-2xl font-bold mb-4 text-center">🎲 Circuito de Juego</h3>
               
               {/* Nuevo tablero en forma de circuito */}
-              <CircuitBoard players={players} totalSpaces={boardSpaces} />
+              <CircuitBoard players={players} totalSpaces={boardSpaces} boardPattern={room.boardPattern} />
 
               {/* Controles del turno */}
               <div className="text-center mt-6">

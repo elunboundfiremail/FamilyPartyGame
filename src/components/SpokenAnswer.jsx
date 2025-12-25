@@ -88,15 +88,6 @@ function SpokenAnswer({ question, players, currentPlayer, onComplete }) {
 
             {amIAnswering ? (
               <>
-                <div className="bg-green-500 bg-opacity-20 border-2 border-green-400 rounded-xl p-4 mb-6 text-center">
-                  <p className="text-green-300 font-bold text-lg">
-                    💡 PARA TI: Respuesta correcta
-                  </p>
-                  <p className="text-2xl text-green-200 font-bold mt-2">
-                    {question.a ? question.a[0] : 'Pregunta abierta'}
-                  </p>
-                </div>
-
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -107,7 +98,7 @@ function SpokenAnswer({ question, players, currentPlayer, onComplete }) {
                 </motion.button>
 
                 <p className="text-center text-sm text-purple-200 mt-4">
-                  Presiona cuando termines de responder
+                  Responde la pregunta hablando y presiona el botón
                 </p>
               </>
             ) : (
