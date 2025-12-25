@@ -134,8 +134,8 @@ export function useGameRoom() {
         currentPlayerIndex: nextIndex
       });
 
-      // Verificar si alguien ganó (llegó a la casilla final)
-      const winner = players.find(p => p.position >= 20);
+      // Verificar si alguien ganó (llegó a la casilla final - ahora 25)
+      const winner = players.find(p => p.position >= 25);
       if (winner) {
         await update(roomRef, {
           gameState: 'finished',

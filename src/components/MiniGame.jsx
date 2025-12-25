@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { triviaQuestions, acertijos, retos, penitencias, preguntasConversacion } from '../data/questions';
+import { triviaQuestions, acertijos, retos, penitencias, preguntasConversacion, desafiosRapidos, adivinanzasRapidas } from '../data/questions';
 
 function MiniGame({ type, player, onComplete }) {
   const [question, setQuestion] = useState(null);
@@ -31,13 +31,25 @@ function MiniGame({ type, player, onComplete }) {
         const pregunta = preguntasConversacion[Math.floor(Math.random() * preguntasConversacion.length)];
         selectedQuestion = { q: pregunta, points: 10 };
         break;
+      case 'rapido':
+        const rapido = desafiosRapidos[Math.floor(Math.random() * desafiosRapidos.length)];
+        selectedQuestion = { 
+          text: rapido.text, 
+          points: rapido.points,
+          time: rapido.time,
+          instruction: `¡Tienes ${rapido.time} segundos!`
+        };
+        break;
     }
     
     setQuestion(selectedQuestion);
   }, [type]);
 
   useEffect(() => {
-    if (type === 'trivia' || type === 'acertijo') {
+    if (type === 'trivia' || type === 'acertijo' || type === 'rapido') {
+      const timeLimit = type === 'rapido' ? (question?.time || 30) : 30;
+      setTimer(timeLimit);
+      
       const interval = setInterval(() => {
         setTimer(prev => {
           if (prev <= 1) {
@@ -51,7 +63,7 @@ function MiniGame({ type, player, onComplete }) {
 
       return () => clearInterval(interval);
     }
-  }, [type]);
+  }, [type, question]);
 
   const handleTimeout = () => {
     setIsCorrect(false);
@@ -73,8 +85,11 @@ function MiniGame({ type, player, onComplete }) {
       setTimeout(() => {
         onComplete(correct ? question.points : 0);
       }, 2000);
+    } else if (type === 'rapido') {
+      // Para desafíos rápidos, los demás votarán
+      onComplete(question.points);
     } else if (type === 'reto' || type === 'conversacion') {
-      // Para retos y conversación, siempre dan puntos si se completan
+      // Para retos y conversación, siempre dan puntos si se completan (luego votarán)
       onComplete(question.points);
     } else if (type === 'penitencia') {
       onComplete(0); // Las penitencias no dan puntos
@@ -90,6 +105,7 @@ function MiniGame({ type, player, onComplete }) {
       case 'reto': return '🎯';
       case 'penitencia': return '😱';
       case 'conversacion': return '💬';
+      case 'rapido': return '⚡';
       default: return '❓';
     }
   };
@@ -101,6 +117,7 @@ function MiniGame({ type, player, onComplete }) {
       case 'reto': return 'Reto';
       case 'penitencia': return 'Penitencia';
       case 'conversacion': return 'Pregunta de Conversación';
+      case 'rapido': return 'Desafío Rápido';
       default: return 'Minijuego';
     }
   };
@@ -127,10 +144,10 @@ function MiniGame({ type, player, onComplete }) {
           <>
             <div className="glass rounded-xl p-6 mb-6">
               <p className="text-xl mb-4">
-                {type === 'reto' || type === 'penitencia' ? question.text : question.q}
+                {type === 'reto' || type === 'penitencia' || type === 'rapido' ? question.text : question.q}
               </p>
               
-              {(type === 'trivia' || type === 'acertijo') && (
+              {(type === 'trivia' || type === 'acertijo' || type === 'rapido') && (
                 <div className="flex items-center justify-between text-sm text-purple-200">
                   <span>⏱️ Tiempo: {timer}s</span>
                   <span>🏆 Puntos: {question.points}</span>
@@ -165,13 +182,34 @@ function MiniGame({ type, player, onComplete }) {
                   ✅ Responder
                 </button>
               </>
+            ) : type === 'rapido' ? (
+              <div className="space-y-3">
+                {question.instruction && (
+                  <div className="glass rounded-lg p-3 text-sm text-yellow-300 font-bold text-center">
+                    ⚡ {question.instruction}
+                  </div>
+                )}
+                <button
+                  onClick={handleSubmit}
+                  className="w-full btn-primary"
+                >
+                  ✅ ¡Listo, lo completé!
+                </button>
+              </div>
             ) : (
-              <button
-                onClick={handleSubmit}
-                className="w-full btn-primary"
-              >
-                {type === 'penitencia' ? '😅 Aceptar Penitencia' : '✅ ¡Completado!'}
-              </button>
+              <div className="space-y-3">
+                {question.instruction && (
+                  <div className="glass rounded-lg p-3 text-sm text-purple-200">
+                    💡 <strong>Instrucción:</strong> {question.instruction}
+                  </div>
+                )}
+                <button
+                  onClick={handleSubmit}
+                  className="w-full btn-primary"
+                >
+                  {type === 'penitencia' ? '😅 Aceptar Penitencia' : '✅ ¡Listo, completé el reto!'}
+                </button>
+              </div>
             )}
           </>
         ) : (

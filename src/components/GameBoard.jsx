@@ -3,14 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DiceRoll from './DiceRoll';
 import MiniGame from './MiniGame';
 import PlayerCard from './PlayerCard';
+import VotingSystem from './VotingSystem';
+import CircuitBoard from './CircuitBoard';
 
 function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
   const [showDice, setShowDice] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
+  const [showVoting, setShowVoting] = useState(false);
   const [diceResult, setDiceResult] = useState(null);
   const [miniGameData, setMiniGameData] = useState(null);
+  const [pendingPoints, setPendingPoints] = useState(0);
   
-  const boardSpaces = 20; // Número de casillas en el tablero
+  const boardSpaces = 25; // Número de casillas en el tablero
   const playerColors = ['bg-pink-500', 'bg-purple-500', 'bg-cyan-500', 'bg-yellow-500', 'bg-green-500', 'bg-red-500'];
 
   const handleRollDice = () => {
@@ -23,12 +27,13 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
     
     // Simular movimiento del jugador
     setTimeout(() => {
-      // Determinar tipo de casilla
-      const spaceTypes = ['trivia', 'acertijo', 'reto', 'penitencia', 'conversacion'];
-      const randomType = spaceTypes[Math.floor(Math.random() * spaceTypes.length)];
+      // Determinar tipo de casilla basado en la posición
+      const position = (currentPlayer.position || 0) + result;
+      const spaceTypes = ['trivia', 'acertijo', 'reto', 'rapido', 'conversacion', 'penitencia'];
+      const typeIndex = position % spaceTypes.length;
       
       setMiniGameData({
-        type: randomType,
+        type: spaceTypes[typeIndex],
         player: currentPlayer
       });
       setShowMiniGame(true);
@@ -37,11 +42,31 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
 
   const handleMiniGameComplete = (points) => {
     setShowMiniGame(false);
-    onMiniGameComplete(points);
+    
+    // Si es un reto o conversación, activar votación
+    if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
+      setPendingPoints(points);
+      setShowVoting(true);
+    } else {
+      // Para trivias y acertijos, dar puntos directamente
+      onMiniGameComplete(points);
+      setTimeout(() => {
+        onEndTurn();
+      }, 1000);
+    }
+  };
+
+  const handleVoteComplete = (approved, yesVotes, noVotes) => {
+    setShowVoting(false);
+    
+    // Si fue aprobado, dar los puntos, si no, dar 0
+    const finalPoints = approved ? pendingPoints : 0;
+    
+    onMiniGameComplete(finalPoints);
     
     setTimeout(() => {
       onEndTurn();
-    }, 1000);
+    }, 1500);
   };
 
   const isMyTurn = currentPlayer?.id === players.find(p => p.isMe)?.id;
@@ -79,58 +104,20 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
 
           {/* Tablero de juego */}
           <div className="lg:col-span-2">
-            <div className="glass rounded-xl p-6 text-white min-h-[500px]">
-              <h3 className="text-2xl font-bold mb-4 text-center">🎲 Tablero de Juego</h3>
+            <div className="text-white">
+              <h3 className="text-2xl font-bold mb-4 text-center">🎲 Circuito de Juego</h3>
               
-              {/* Representación visual del tablero */}
-              <div className="relative">
-                <div className="grid grid-cols-5 gap-2 mb-6">
-                  {[...Array(boardSpaces)].map((_, index) => {
-                    const playersOnSpace = players.filter(p => p.position === index);
-                    
-                    return (
-                      <motion.div
-                        key={index}
-                        className="aspect-square glass rounded-lg flex flex-col items-center justify-center p-2 relative"
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        <span className="text-xs text-purple-200">{index + 1}</span>
-                        
-                        {/* Mostrar jugadores en esta casilla */}
-                        <div className="absolute -top-2 -right-2 flex flex-wrap gap-1">
-                          {playersOnSpace.map((player, pIndex) => (
-                            <motion.div
-                              key={player.id}
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className={`w-6 h-6 rounded-full ${playerColors[players.indexOf(player)]} 
-                                       border-2 border-white shadow-lg flex items-center justify-center text-xs`}
-                            >
-                              {player.name[0]}
-                            </motion.div>
-                          ))}
-                        </div>
-                        
-                        {/* Icono de tipo de casilla */}
-                        <div className="text-2xl mt-1">
-                          {index % 5 === 0 ? '⭐' : 
-                           index % 3 === 0 ? '🎯' : 
-                           index % 2 === 0 ? '🎲' : '❓'}
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* Nuevo tablero en forma de circuito */}
+              <CircuitBoard players={players} totalSpaces={boardSpaces} />
 
               {/* Controles del turno */}
-              <div className="text-center">
+              <div className="text-center mt-6">
                 {isMyTurn ? (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleRollDice}
-                    disabled={showDice || showMiniGame}
+                    disabled={showDice || showMiniGame || showVoting}
                     className="btn-primary text-2xl disabled:opacity-50"
                   >
                     🎲 Lanzar Dado
@@ -159,6 +146,14 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
             type={miniGameData.type}
             player={miniGameData.player}
             onComplete={handleMiniGameComplete}
+          />
+        )}
+        
+        {showVoting && (
+          <VotingSystem
+            players={players}
+            currentPlayer={currentPlayer}
+            onVoteComplete={handleVoteComplete}
           />
         )}
       </AnimatePresence>

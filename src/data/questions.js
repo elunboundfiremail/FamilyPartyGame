@@ -50,16 +50,21 @@ export const acertijos = [
 ];
 
 export const retos = [
-  { text: "Imita a un animal hasta que alguien adivine cuál es", points: 15 },
-  { text: "Canta 30 segundos de tu canción favorita", points: 10 },
-  { text: "Di 5 cosas por las que estás agradecido hoy", points: 15 },
-  { text: "Baila sin música por 20 segundos", points: 15 },
-  { text: "Cuenta un chiste (si nadie se ríe, pierdes 5 puntos)", points: 10 },
-  { text: "Haz 10 sentadillas", points: 10 },
-  { text: "Di trabalenguas: 'El cielo está enladrillado, quien lo desenladrillará'", points: 15 },
-  { text: "Habla como un robot por 1 minuto", points: 10 },
-  { text: "Describe tu día sin usar las letras 'A' y 'E'", points: 20 },
-  { text: "Imita a alguien de la sala (sin ofender)", points: 15 },
+  { text: "Imita a un animal hasta que alguien adivine cuál es", points: 15, instruction: "Los demás deben adivinar qué animal eres" },
+  { text: "Canta 30 segundos de cualquier canción (la que tú elijas)", points: 10, instruction: "Canta en voz alta durante 30 segundos" },
+  { text: "Di 5 cosas por las que estás agradecido hoy", points: 15, instruction: "Comparte 5 cosas positivas de tu día" },
+  { text: "Baila durante 20 segundos (elige la música que quieras o sin música)", points: 15, instruction: "¡A bailar! No importa si bailas bien o mal" },
+  { text: "Cuenta un chiste o algo gracioso que te pasó", points: 10, instruction: "Intenta hacer reír a los demás" },
+  { text: "Haz 10 sentadillas frente a todos", points: 10, instruction: "Ejercicio físico - cuenta en voz alta" },
+  { text: "Di este trabalenguas 3 veces rápido: 'El cielo está enladrillado'", points: 15, instruction: "Repite el trabalenguas 3 veces seguidas" },
+  { text: "Habla como un personaje famoso durante 30 segundos", points: 10, instruction: "Elige cualquier personaje e imítalo" },
+  { text: "Describe tu día de hoy en 1 minuto (sin usar las palabras 'y' o 'entonces')", points: 20, instruction: "Cuéntales a todos sobre tu día" },
+  { text: "Imita la forma de hablar de alguien de la sala (con respeto y humor)", points: 15, instruction: "Sin ofender, solo con cariño y diversión" },
+  { text: "Haz una pose de yoga y manténla por 30 segundos", points: 10, instruction: "Cualquier pose que conozcas o inventes" },
+  { text: "Di los nombres de 10 países en 20 segundos", points: 15, instruction: "¡Rápido! Cuenta con los dedos" },
+  { text: "Actúa como si estuvieras en cámara lenta por 30 segundos", points: 10, instruction: "Movimientos y voz en cámara lenta" },
+  { text: "Cuenta una anécdota vergonzosa (pero divertida) de tu infancia", points: 20, instruction: "Algo gracioso que te pasó de niño" },
+  { text: "Haz 5 cumplidos diferentes a los demás jugadores", points: 15, instruction: "Di algo bonito a cada jugador" },
 ];
 
 export const penitencias = [
@@ -85,4 +90,46 @@ export const preguntasConversacion = [
   "Comparte algo que aprendiste este año",
   "¿Cuál es tu tradición familiar favorita?",
   "Si pudieras cambiar algo del mundo, ¿qué sería?",
+  "¿Cuál es tu mayor logro hasta ahora?",
+  "¿Qué te gustaría hacer en los próximos 5 años?",
+  "Cuenta una historia divertida de tu familia",
+  "¿Qué consejo le darías a tu yo del pasado?",
+  "¿Cuál ha sido tu mejor viaje o aventura?",
+  "¿Qué música te pone de buen humor?",
+  "¿Cuál es tu hobby favorito y por qué?",
+  "¿Qué es lo que más valoras en una amistad?",
+];
+
+// Nuevos minijuegos
+export const desafiosRapidos = [
+  { text: "Di el abecedario al revés en menos de 30 segundos", points: 20, time: 30 },
+  { text: "Nombra 15 animales diferentes en 20 segundos", points: 15, time: 20 },
+  { text: "Cuenta del 1 al 20 pero reemplazando los múltiplos de 3 por 'PUM'", points: 15, time: 30 },
+  { text: "Di 10 palabras que empiecen con la letra 'P' en 15 segundos", points: 15, time: 15 },
+  { text: "Nombra una capital de país por cada letra del abecedario (mínimo 10)", points: 20, time: 40 },
+];
+
+export const juegosMemoria = [
+  { 
+    text: "Memoriza esta secuencia: 🍎🍌🍇🍊🍓",
+    answer: ["🍎🍌🍇🍊🍓", "manzana banana uva naranja fresa"],
+    points: 15
+  },
+  { 
+    text: "Memoriza estos números: 7, 3, 9, 1, 5, 2",
+    answer: ["739152"],
+    points: 15
+  },
+  { 
+    text: "Memoriza estas palabras: CASA, SOL, MAR, PAN",
+    answer: ["casa sol mar pan", "CASA SOL MAR PAN"],
+    points: 10
+  },
+];
+
+export const adivinanzasRapidas = [
+  { q: "Si tengo 10 manzanas y me quitas 3, ¿cuántas tienes tú?", a: ["3", "tres"], points: 10 },
+  { q: "¿Qué tiene cuello pero no cabeza?", a: ["botella", "una botella"], points: 10 },
+  { q: "¿Qué se moja mientras seca?", a: ["toalla", "una toalla"], points: 10 },
+  { q: "Cuanto más quitas, más grande se hace. ¿Qué es?", a: ["hoyo", "un hoyo", "agujero"], points: 15 },
 ];
