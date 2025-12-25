@@ -10,7 +10,8 @@ export function useGameRoom() {
   const [myPlayerId, setMyPlayerId] = useState(null);
 
   const generateRoomCode = () => {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Generar código de 4 dígitos numéricos
+    return Math.floor(1000 + Math.random() * 9000).toString();
   };
 
   const createRoom = async (playerName) => {

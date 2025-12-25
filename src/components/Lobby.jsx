@@ -12,9 +12,9 @@ function Lobby({ room, players, isHost, onStartGame, onLeaveRoom }) {
       >
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">Sala de Espera</h1>
-          <div className="inline-block glass px-6 py-3 rounded-xl">
-            <p className="text-sm text-purple-200">Código de Sala</p>
-            <p className="text-3xl font-bold tracking-widest">{room.code}</p>
+          <div className="inline-block glass px-8 py-4 rounded-xl border-2 border-yellow-300">
+            <p className="text-sm text-yellow-200">Código de Sala</p>
+            <p className="text-5xl font-bold tracking-widest text-yellow-400">{room.code}</p>
           </div>
         </div>
 

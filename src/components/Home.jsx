@@ -69,13 +69,13 @@ function Home({ onCreateRoom, onJoinRoom }) {
             animate={{ x: 0, opacity: 1 }}
           >
             <input
-              type="text"
-              placeholder="Código de sala"
+              type="number"
+              placeholder="Código de sala (4 dígitos)"
               value={roomCode}
-              onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-              className="w-full px-4 py-3 rounded-xl bg-white bg-opacity-20 border border-white border-opacity-30 
-                       text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              maxLength={6}
+              onChange={(e) => setRoomCode(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-white bg-opacity-25 border-2 border-yellow-300 border-opacity-50 
+                       text-white text-2xl text-center placeholder-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-400 font-bold"
+              maxLength={4}
             />
             
             <button

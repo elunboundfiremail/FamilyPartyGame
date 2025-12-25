@@ -10,7 +10,9 @@ import MysteryBoxResult from './MysteryBoxResult';
 import TapGame from './TapGame';
 import MemoryGame from './MemoryGame';
 import MathGame from './MathGame';
+import SharedQuestion from './SharedQuestion';
 import { getRandomReward } from '../data/mysteryBoxRewards';
+import { triviaQuestions, acertijos } from '../data/questions';
 
 function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
   const [showDice, setShowDice] = useState(false);
@@ -18,11 +20,13 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   const [showVoting, setShowVoting] = useState(false);
   const [showMysteryBox, setShowMysteryBox] = useState(false);
   const [showMysteryResult, setShowMysteryResult] = useState(false);
+  const [showSharedQuestion, setShowSharedQuestion] = useState(false);
   const [diceResult, setDiceResult] = useState(null);
   const [miniGameData, setMiniGameData] = useState(null);
   const [pendingPoints, setPendingPoints] = useState(0);
   const [mysteryReward, setMysteryReward] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [sharedQuestionData, setSharedQuestionData] = useState(null);
   
   const boardSpaces = 30; // Número de casillas en el tablero
   const playerColors = [
@@ -65,13 +69,12 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         setShowMysteryResult(true);
       }
     } else {
-      // Casilla normal
-      const position = (currentPlayer.position || 0) + diceResult;
+      // Casilla normal - ALEATORIA (no predefinida por posición)
       const spaceTypes = ['trivia', 'acertijo', 'reto', 'rapido', 'conversacion', 'penitencia'];
-      const typeIndex = position % spaceTypes.length;
+      const randomType = spaceTypes[Math.floor(Math.random() * spaceTypes.length)];
       
       setMiniGameData({
-        type: spaceTypes[typeIndex],
+        type: randomType,
         player: currentPlayer
       });
       setShowMiniGame(true);
@@ -96,18 +99,38 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
   const handleMiniGameComplete = (points, answer = null, correctAns = null) => {
     setShowMiniGame(false);
     
-    // Si es un reto, conversación o trivia, activar votación
-    if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion' || miniGameData.type === 'trivia') {
+    // Para trivias y acertijos, usar sistema de preguntas compartidas
+    if (miniGameData.type === 'trivia' || miniGameData.type === 'acertijo') {
+      // Obtener pregunta aleatoria
+      let question;
+      if (miniGameData.type === 'trivia') {
+        const allTrivia = Object.values(triviaQuestions).flat();
+        question = allTrivia[Math.floor(Math.random() * allTrivia.length)];
+      } else {
+        question = acertijos[Math.floor(Math.random() * acertijos.length)];
+      }
+      
+      setSharedQuestionData(question);
+      setShowSharedQuestion(true);
+    } else if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
+      // Para retos y conversación, usar votación tradicional
       setPendingPoints(points);
-      setCorrectAnswer(correctAns); // Para trivias, mostrar respuesta correcta
       setShowVoting(true);
     } else {
-      // Para acertijos y juegos de caja sorpresa, dar puntos directamente
+      // Para otros juegos, dar puntos directamente
       onMiniGameComplete(points);
       setTimeout(() => {
         onEndTurn();
       }, 1000);
     }
+  };
+
+  const handleSharedQuestionComplete = (points, winnerId) => {
+    setShowSharedQuestion(false);
+    onMiniGameComplete(points);
+    setTimeout(() => {
+      onEndTurn();
+    }, 1500);
   };
 
   const handleVoteComplete = (approved, yesVotes, noVotes) => {
@@ -243,6 +266,15 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
           <MathGame
             player={miniGameData.player}
             onComplete={handleMiniGameComplete}
+          />
+        )}
+        
+        {showSharedQuestion && sharedQuestionData && (
+          <SharedQuestion
+            question={sharedQuestionData}
+            players={players}
+            currentPlayer={currentPlayer}
+            onComplete={handleSharedQuestionComplete}
           />
         )}
       </AnimatePresence>
