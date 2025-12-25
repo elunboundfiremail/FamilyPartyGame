@@ -7,39 +7,40 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
     'bg-orange-500', 'bg-teal-500', 'bg-lime-500', 'bg-rose-500'
   ];
   
-  // Crear el circuito en forma de serpiente
+  // Crear un camino serpenteante tipo gusano (no cuadrado)
   const createSnakeLayout = () => {
-    const layout = [];
-    const columns = 5;
-    const rows = Math.ceil(totalSpaces / columns);
+    const positions = [];
     
-    let spaceNumber = 0;
+    // Crear un camino serpenteante más orgánico
+    // Patrón: va en zigzag con curvas suaves
+    const pattern = [
+      // Fila 1 (inicio) - de izquierda a derecha
+      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 0 },
+      // Curva hacia abajo-derecha
+      { x: 6, y: 1 },
+      // Fila 2 - de derecha a izquierda
+      { x: 6, y: 2 }, { x: 5, y: 2 }, { x: 4, y: 2 }, { x: 3, y: 2 }, { x: 2, y: 2 }, { x: 1, y: 2 },
+      // Curva hacia abajo-izquierda
+      { x: 0, y: 3 },
+      // Fila 3 - de izquierda a derecha
+      { x: 0, y: 4 }, { x: 1, y: 4 }, { x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 4 },
+      // Curva hacia abajo-derecha
+      { x: 6, y: 5 },
+      // Fila 4 - de derecha a izquierda
+      { x: 6, y: 6 }, { x: 5, y: 6 }, { x: 4, y: 6 }, { x: 3, y: 6 }, { x: 2, y: 6 }, { x: 1, y: 6 },
+      // Final
+      { x: 0, y: 7 }, { x: 0, y: 8 }
+    ];
     
-    for (let row = 0; row < rows; row++) {
-      const rowSpaces = [];
-      const isReversed = row % 2 !== 0; // Alterna dirección en cada fila
-      
-      for (let col = 0; col < columns; col++) {
-        if (spaceNumber < totalSpaces) {
-          const actualCol = isReversed ? columns - 1 - col : col;
-          rowSpaces.push({
-            number: spaceNumber,
-            row: row,
-            col: actualCol,
-            position: spaceNumber
-          });
-          spaceNumber++;
-        }
-      }
-      
-      if (isReversed) {
-        rowSpaces.reverse();
-      }
-      
-      layout.push(rowSpaces);
+    for (let i = 0; i < Math.min(totalSpaces, pattern.length); i++) {
+      positions.push({
+        position: i,
+        x: pattern[i].x,
+        y: pattern[i].y
+      });
     }
     
-    return layout;
+    return positions;
   };
 
   const layout = createSnakeLayout();
@@ -65,83 +66,107 @@ function CircuitBoard({ players, totalSpaces = 30 }) {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       <div className="glass rounded-2xl p-6">
-        <div className="space-y-2">
-          {layout.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex gap-2 justify-center">
-              {row.map((space) => {
-                const spaceInfo = getSpaceType(space.position);
-                const playersHere = getPlayersOnSpace(space.position);
+        {/* Tablero con posicionamiento absoluto tipo gusano */}
+        <div className="relative" style={{ height: '600px' }}>
+          {layout.map((space) => {
+            const spaceInfo = getSpaceType(space.position);
+            const playersHere = getPlayersOnSpace(space.position);
+            
+            // Calcular posición en la pantalla
+            const left = space.x * 80 + 20;
+            const top = space.y * 70 + 20;
+            
+            return (
+              <motion.div
+                key={space.position}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: space.position * 0.03 }}
+                whileHover={{ scale: 1.15, rotate: 5, zIndex: 50 }}
+                style={{
+                  position: 'absolute',
+                  left: `${left}px`,
+                  top: `${top}px`
+                }}
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
+                          shadow-lg flex flex-col items-center justify-center border-2 border-white border-opacity-40`}
+              >
+                {/* Conector al siguiente (línea) */}
+                {space.position < totalSpaces - 1 && (
+                  <div
+                    className="absolute bg-yellow-300 opacity-40"
+                    style={{
+                      width: space.position < totalSpaces - 1 && layout[space.position + 1] ? 
+                        `${Math.sqrt(Math.pow((layout[space.position + 1].x - space.x) * 80, 2) + 
+                                    Math.pow((layout[space.position + 1].y - space.y) * 70, 2))}px` : '0px',
+                      height: '4px',
+                      transformOrigin: 'left center',
+                      transform: space.position < totalSpaces - 1 && layout[space.position + 1] ?
+                        `rotate(${Math.atan2((layout[space.position + 1].y - space.y) * 70, 
+                                            (layout[space.position + 1].x - space.x) * 80) * 180 / Math.PI}deg) translateX(40px)` : 'none',
+                      zIndex: -1
+                    }}
+                  />
+                )}
                 
-                return (
-                  <motion.div
-                    key={space.position}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: space.position * 0.02 }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br ${spaceInfo.color} 
-                              shadow-lg flex flex-col items-center justify-center border-2 border-white border-opacity-40`}
-                  >
-                    {/* Número de casilla - MÁS VISIBLE */}
-                    <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-60 rounded-full w-6 h-6 flex items-center justify-center">
-                      <span className="text-xs font-bold text-white">{space.position + 1}</span>
-                    </div>
-                    
-                    {/* Emoji del tipo de casilla - ANIMADO */}
-                    <motion.div 
-                      className="text-2xl sm:text-3xl"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        rotate: [0, 5, -5, 0]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: space.position * 0.1
-                      }}
-                    >
-                      {spaceInfo.emoji}
-                    </motion.div>
-                    
-                    {/* Jugadores en esta casilla */}
-                    {playersHere.length > 0 && (
-                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-0.5">
-                        {playersHere.map((player, idx) => {
-                          const playerIndex = players.indexOf(player);
-                          return (
-                            <motion.div
-                              key={player.id}
-                              initial={{ scale: 0, y: -10 }}
-                              animate={{ scale: 1, y: 0 }}
-                              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${playerColors[playerIndex % playerColors.length]} 
-                                       border-2 border-white shadow-lg flex items-center justify-center 
-                                       text-xs font-bold text-white`}
-                            >
-                              {player.name[0].toUpperCase()}
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    )}
-                    
-                    {/* Etiqueta especial para inicio y meta */}
-                    {space.position === 0 && (
-                      <div className="absolute -top-6 text-xs font-bold text-green-400">
-                        INICIO
-                      </div>
-                    )}
-                    {space.position === totalSpaces - 1 && (
-                      <div className="absolute -top-6 text-xs font-bold text-yellow-400">
-                        META
-                      </div>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
-          ))}
+                {/* Número de casilla - MÁS VISIBLE */}
+                <div className="absolute top-0.5 left-0.5 bg-black bg-opacity-70 rounded-full w-7 h-7 flex items-center justify-center border border-yellow-300">
+                  <span className="text-sm font-bold text-white">{space.position + 1}</span>
+                </div>
+                
+                {/* Emoji del tipo de casilla - ANIMADO */}
+                <motion.div 
+                  className="text-2xl sm:text-3xl"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: space.position * 0.1
+                  }}
+                >
+                  {spaceInfo.emoji}
+                </motion.div>
+                
+                {/* Jugadores en esta casilla */}
+                {playersHere.length > 0 && (
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-0.5 flex-wrap max-w-[80px] justify-center">
+                    {playersHere.map((player) => {
+                      const playerIndex = players.indexOf(player);
+                      return (
+                        <motion.div
+                          key={player.id}
+                          initial={{ scale: 0, y: -10 }}
+                          animate={{ scale: 1, y: 0 }}
+                          className={`w-6 h-6 rounded-full ${playerColors[playerIndex % playerColors.length]} 
+                                   border-2 border-white shadow-lg flex items-center justify-center 
+                                   text-xs font-bold text-white`}
+                        >
+                          {player.name[0].toUpperCase()}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+                
+                {/* Etiqueta especial para inicio y meta */}
+                {space.position === 0 && (
+                  <div className="absolute -top-7 text-sm font-bold text-green-400 bg-black bg-opacity-60 px-2 py-1 rounded whitespace-nowrap">
+                    🏁 INICIO
+                  </div>
+                )}
+                {space.position === totalSpaces - 1 && (
+                  <div className="absolute -top-7 text-sm font-bold text-yellow-400 bg-black bg-opacity-60 px-2 py-1 rounded whitespace-nowrap">
+                    🏆 META
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
         
         {/* Leyenda */}
