@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Home from './components/Home';
 import Lobby from './components/Lobby';
 import GameBoard from './components/GameBoard';
+import ChristmasDecorations from './components/ChristmasDecorations';
 import { useGameRoom } from './hooks/useGameRoom';
 import './App.css';
 
@@ -62,6 +63,7 @@ function App() {
 
   return (
     <div className="App min-h-screen">
+      <ChristmasDecorations />
       <AnimatePresence mode="wait">
         {!room && (
           <motion.div
