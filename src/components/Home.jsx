@@ -18,11 +18,14 @@ function Home({ onCreateRoom, onJoinRoom }) {
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-5xl font-bold text-center mb-2 bg-gradient-to-r from-yellow-200 via-orange-300 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
-            🎉 Family Party 🎉
+          <h1 className="text-5xl font-bold text-center mb-2 bg-gradient-to-r from-red-200 via-green-300 to-red-300 bg-clip-text text-transparent drop-shadow-lg">
+            🎄 Family Party Navidad 🎅
           </h1>
-          <p className="text-center text-yellow-100 mb-8 font-semibold">
+          <p className="text-center text-red-100 mb-2 font-semibold text-lg">
             ¡El juego perfecto para la familia!
+          </p>
+          <p className="text-center text-yellow-200 mb-8 text-sm">
+            ❄️ Edición Especial Navideña ⛄
           </p>
         </motion.div>
 

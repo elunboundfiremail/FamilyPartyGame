@@ -4,24 +4,55 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-orange-600 via-yellow-500 to-amber-400 min-h-screen;
+    @apply bg-gradient-to-br from-red-700 via-green-600 to-red-600 min-h-screen;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Nieve cayendo - Efecto navideño */
+  body::before {
+    content: '❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️';
+    position: fixed;
+    top: -50px;
+    left: 0;
+    right: 0;
+    font-size: 20px;
+    opacity: 0.7;
+    animation: snowfall 10s linear infinite;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  @keyframes snowfall {
+    0% {
+      transform: translateY(-50px);
+    }
+    100% {
+      transform: translateY(100vh);
+    }
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white bg-opacity-15 backdrop-blur-xl border-2 border-yellow-300 border-opacity-30 shadow-2xl;
+    @apply bg-white bg-opacity-20 backdrop-blur-xl border-2 border-red-300 border-opacity-40 shadow-2xl;
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 
+    @apply bg-gradient-to-r from-red-500 via-green-500 to-red-600 hover:from-red-600 hover:via-green-600 hover:to-red-700 
            text-white font-bold py-3 px-6 rounded-xl shadow-2xl transform transition 
            hover:scale-105 active:scale-95 border-2 border-yellow-300;
   }
   
   .btn-secondary {
-    @apply bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 
+    @apply bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 
            text-white font-bold py-3 px-6 rounded-xl shadow-2xl transform transition 
-           hover:scale-105 active:scale-95 border-2 border-yellow-300;
+           hover:scale-105 active:scale-95 border-2 border-red-300;
+  }
+  
+  .btn-mystery {
+    @apply bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 hover:from-purple-700 hover:via-pink-600 hover:to-purple-800 
+           text-white font-bold py-3 px-6 rounded-xl shadow-2xl transform transition 
+           hover:scale-105 active:scale-95 border-2 border-yellow-300 animate-pulse;
   }
 }

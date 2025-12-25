@@ -5,14 +5,24 @@ import MiniGame from './MiniGame';
 import PlayerCard from './PlayerCard';
 import VotingSystem from './VotingSystem';
 import CircuitBoard from './CircuitBoard';
+import MysteryBox from './MysteryBox';
+import MysteryBoxResult from './MysteryBoxResult';
+import TapGame from './TapGame';
+import MemoryGame from './MemoryGame';
+import MathGame from './MathGame';
+import { getRandomReward } from '../data/mysteryBoxRewards';
 
 function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplete, onEndTurn }) {
   const [showDice, setShowDice] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showVoting, setShowVoting] = useState(false);
+  const [showMysteryBox, setShowMysteryBox] = useState(false);
+  const [showMysteryResult, setShowMysteryResult] = useState(false);
   const [diceResult, setDiceResult] = useState(null);
   const [miniGameData, setMiniGameData] = useState(null);
   const [pendingPoints, setPendingPoints] = useState(0);
+  const [mysteryReward, setMysteryReward] = useState(null);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
   
   const boardSpaces = 25; // Número de casillas en el tablero
   const playerColors = ['bg-pink-500', 'bg-purple-500', 'bg-cyan-500', 'bg-yellow-500', 'bg-green-500', 'bg-red-500'];
@@ -25,10 +35,34 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
     setDiceResult(result);
     setShowDice(false);
     
-    // Simular movimiento del jugador
+    // Mostrar opción: casilla normal o caja sorpresa
     setTimeout(() => {
-      // Determinar tipo de casilla basado en la posición
-      const position = (currentPlayer.position || 0) + result;
+      setShowMysteryBox(true);
+    }, 500);
+  };
+
+  const handleMysteryChoice = (choice) => {
+    setShowMysteryBox(false);
+    
+    if (choice === 'mystery') {
+      // Caja sorpresa
+      const reward = getRandomReward();
+      setMysteryReward(reward);
+      
+      if (reward.type === 'minigame') {
+        // Es un minijuego especial
+        setMiniGameData({
+          type: reward.value,
+          player: currentPlayer
+        });
+        setShowMiniGame(true);
+      } else {
+        // Mostrar resultado de la caja
+        setShowMysteryResult(true);
+      }
+    } else {
+      // Casilla normal
+      const position = (currentPlayer.position || 0) + diceResult;
       const spaceTypes = ['trivia', 'acertijo', 'reto', 'rapido', 'conversacion', 'penitencia'];
       const typeIndex = position % spaceTypes.length;
       
@@ -37,18 +71,34 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
         player: currentPlayer
       });
       setShowMiniGame(true);
+    }
+  };
+
+  const handleMysteryBoxComplete = (reward) => {
+    setShowMysteryResult(false);
+    
+    // Aplicar recompensa
+    let pointsEarned = 0;
+    if (reward.type === 'points') {
+      pointsEarned = reward.value;
+    }
+    
+    onMiniGameComplete(pointsEarned);
+    setTimeout(() => {
+      onEndTurn();
     }, 1000);
   };
 
-  const handleMiniGameComplete = (points) => {
+  const handleMiniGameComplete = (points, answer = null, correctAns = null) => {
     setShowMiniGame(false);
     
-    // Si es un reto o conversación, activar votación
-    if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion') {
+    // Si es un reto, conversación o trivia, activar votación
+    if (miniGameData.type === 'reto' || miniGameData.type === 'conversacion' || miniGameData.type === 'trivia') {
       setPendingPoints(points);
+      setCorrectAnswer(correctAns); // Para trivias, mostrar respuesta correcta
       setShowVoting(true);
     } else {
-      // Para trivias y acertijos, dar puntos directamente
+      // Para acertijos y juegos de caja sorpresa, dar puntos directamente
       onMiniGameComplete(points);
       setTimeout(() => {
         onEndTurn();
@@ -154,6 +204,39 @@ function GameBoard({ room, players, currentPlayer, onRollDice, onMiniGameComplet
             players={players}
             currentPlayer={currentPlayer}
             onVoteComplete={handleVoteComplete}
+            correctAnswer={correctAnswer}
+          />
+        )}
+        
+        {showMysteryBox && (
+          <MysteryBox onChoice={handleMysteryChoice} />
+        )}
+        
+        {showMysteryResult && mysteryReward && (
+          <MysteryBoxResult
+            reward={mysteryReward}
+            onComplete={handleMysteryBoxComplete}
+          />
+        )}
+        
+        {miniGameData?.type === 'tap' && showMiniGame && (
+          <TapGame
+            player={miniGameData.player}
+            onComplete={handleMiniGameComplete}
+          />
+        )}
+        
+        {miniGameData?.type === 'memory' && showMiniGame && (
+          <MemoryGame
+            player={miniGameData.player}
+            onComplete={handleMiniGameComplete}
+          />
+        )}
+        
+        {miniGameData?.type === 'math' && showMiniGame && (
+          <MathGame
+            player={miniGameData.player}
+            onComplete={handleMiniGameComplete}
           />
         )}
       </AnimatePresence>

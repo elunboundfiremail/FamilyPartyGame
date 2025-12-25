@@ -72,7 +72,21 @@ function MiniGame({ type, player, onComplete }) {
   };
 
   const handleSubmit = () => {
-    if (type === 'trivia' || type === 'acertijo') {
+    if (type === 'trivia') {
+      const normalizedAnswer = userAnswer.toLowerCase().trim();
+      const correct = question.a.some(ans => 
+        normalizedAnswer === ans.toLowerCase() || 
+        normalizedAnswer.includes(ans.toLowerCase())
+      );
+      
+      // Para trivias, los demás votarán si respondió bien
+      // Pasamos la respuesta del usuario y la correcta
+      onComplete(
+        correct ? question.points : 0,
+        userAnswer,
+        question.a[0] // Respuesta correcta
+      );
+    } else if (type === 'acertijo') {
       const normalizedAnswer = userAnswer.toLowerCase().trim();
       const correct = question.a.some(ans => 
         normalizedAnswer === ans.toLowerCase() || 

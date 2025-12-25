@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function VotingSystem({ players, currentPlayer, onVoteComplete }) {
+function VotingSystem({ players, currentPlayer, onVoteComplete, correctAnswer }) {
   const [votes, setVotes] = useState({});
   const [hasVoted, setHasVoted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
@@ -84,8 +84,15 @@ function VotingSystem({ players, currentPlayer, onVoteComplete }) {
           <div className="text-6xl mb-3">👥</div>
           <h2 className="text-3xl font-bold mb-2">¡Votación!</h2>
           <p className="text-purple-200 text-lg">
-            ¿{currentPlayer.name} completó el reto correctamente?
+            ¿{currentPlayer.name} {correctAnswer ? 'respondió correctamente' : 'completó el reto'}?
           </p>
+          {correctAnswer && (
+            <div className="mt-4 glass rounded-xl p-4">
+              <p className="text-yellow-200 font-bold text-xl">
+                ✅ Respuesta correcta: {correctAnswer}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="glass rounded-xl p-6 mb-6">
